@@ -1,6 +1,6 @@
 import streamlit as st
 
-from utils import resize_image, save_rate
+from utils import resize_image, save_rate,get_recommended_beer,get_info
 from config import CGF
 
 #################################
@@ -23,12 +23,15 @@ beer_img_link = ['https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_de
 'https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_48076',
 'https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_48076']
 
+
 #################################
 # 저장변수
 coldstart_data = {}
-
+keywords=[]
 ##################################
-# streamlit 실행
+# streamlit 실행.
+# st.set_page_config(layout='wide')
+
 st.title("도전맥주홀릭")
 
 # coldstart 맥주 평가
@@ -46,20 +49,32 @@ for col, beer, image_path in zip(cols,beer_list,beer_img_link):
         )
         save_rate(beer_dict, beer, option_rate, coldstart_data)
 
+# 추천 키워드 선택
+st.header("추천에 원하는 키워드를 선택해보세요")
+keywords = st.multiselect('여러개 선택가능!', CGF.rec_keywords)
 
 # coldstart 맥주 평가 제출
 coldstart_button = st.button('제출')
 if coldstart_button: 
     st.write(coldstart_data)
+    st.write(keywords)
     # TODO 여기서 POST를 해주세요
-
-
-# 4캔 추천 config
-
-
 
 # 4캔 추천 반환
 
+    r_beer_id = get_recommended_beer()
+    r_beers = {beer_id:get_info(beer_id) for beer_id in r_beer_id}
+
+    r_col1, r_col2, r_col3, r_col4 = st.columns(4)
+    r_cols = [r_col1, r_col2, r_col3, r_col4]
+
+    for col, beer_id in zip(r_cols, r_beer_id):
+        with col:
+            st.image(resize_image(r_beers[beer_id]['imageUrl'], CGF.image_size),
+                    caption = r_beers[beer_id]['beerName'])
 
 
 # 추천 결과 평가
+            
+    
+    
