@@ -2,7 +2,7 @@ from itertools import product
 from fastapi import FastAPI
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from datetime import datetime
 
@@ -36,18 +36,18 @@ def hello_world():
     return {"hello": "world"}
 
 class Product(BaseModel):
-    id: UUID = Field(default_factory=uuid4)
-    name: str
-    image: str
+    id: str
     score: float
 
-
+class Rec_Product(Product):
+    img : str
 
 class Order(BaseModel):
     id: UUID = Field(default_factory=uuid4)
-    products: List[Product] = Field(default_factory=list)
-    #created_at: datetime = Field(defalut_factory=datetime.now)
-    #updated_at: datetime = Field(default_factory=datetime.now)
+    #products: List[Product] = Field(default_factory=list)
+    products: List[Rec_Product] = Field(default_factory=list)
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
 
     def add_product(self, product: Product):
         if product.id in [exisiting_product.id for exisiting_product in self.products]:
@@ -71,35 +71,39 @@ class InferenceRecProduct(Product):
 # - [ ]  inference의 결과값을 유저에게 보여주기 : 4캔 조합
 #     - [ ]  4개의 맥주 이미지 및 이름 보여주기
 
-@app.get("/order", description="유저가 맥주를 선택합니다.")
-def get_orders() -> List[Order]:
-    return product_list
+# @app.get("/order", description="유저가 맥주를 선택합니다.")
+# def get_orders() -> List[Order]:
+#     return product_list
 
-@app.get("/order/{order_id}", description="유저가 맥주를 선택합니다.")
-def get_order(order_id: int) -> List[Order]:
-    new_product = Product(name=product_list[order_id], score=order_id)
-    #new_product.name = get_order_by_id(order_id)
-    #new_order = Order(products=[new_product])
-    return new_product
+# @app.get("/order/{order_id}", description="유저가 맥주를 선택합니다.")
+# def get_order(order_id: int) -> List[Order]:
+#     new_product = Product(name=product_list[order_id], score=order_id)
+#     #new_product.name = get_order_by_id(order_id)
+#     #new_order = Order(products=[new_product])
+#     return new_product
 
-def get_order_by_id(order_id: int):
-    return product_list[order_id]
+# def get_order_by_id(order_id: int):
+#     return product_list[order_id]
 
-@app.post("/select/", description="유저가 선호하는 맥주를 선택합니다")
-def preference_select(product : Product):
+@app.post("/select", description="유저가 선호하는 맥주를 선택합니다")
+def preference_select(products : dict):
+    beer_list = []
+    for key,value in enumerate(products):
+        user_beer =  Rec_Product(id=value, score=key, img="imgs")
+        beer_list.append(user_beer)
+    order = Order(products=beer_list)
+    return order
+
+# @app.post("/order/", description="맥주 추천을 요청합니다.")
+# def make_order() -> Order:
     
-    return product
+#     products =[]
+#     for _ in product_list:
+#         Inference_result = rec_list
+#         product = InferenceRecProduct(result=Inference_result)
+#         products.append(product)
 
-@app.post("/order/", description="맥주 추천을 요청합니다.")
-def make_order() -> Order:
-    
-    products =[]
-    for _ in product_list:
-        Inference_result = rec_list
-        product = InferenceRecProduct(result=Inference_result)
-        products.append(product)
-
-    new_order = Order(products=products)
+#     new_order = Order(products=products)
 
     
-    return new_order
+#     return new_order
