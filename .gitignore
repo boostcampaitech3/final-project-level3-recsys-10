@@ -1,7 +1,16 @@
 # PROJECT-CUSTOMIZED
 */data
 data/
+*/SLIM
 
+# data
+*.json
+*.csv
+
+# file
+.ipynb_checkpoints
+.empty
+*.pt
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,linux,macos,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,linux,macos,windows
