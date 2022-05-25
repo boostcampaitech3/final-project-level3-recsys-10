@@ -1,10 +1,12 @@
 # folder
 /data
 */SLIM
-/model
-.ipynb_checkpoints
-.github
+
 
 # data
 *.json
 *.csv
+.ipynb_checkpoints
+.github
+.empty
+*.pt
