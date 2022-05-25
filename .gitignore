@@ -9,7 +9,6 @@ data/
 
 # file
 .ipynb_checkpoints
-.github
 .empty
 *.pt
 
