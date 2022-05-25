@@ -3,6 +3,7 @@ from io import BytesIO
 from PIL import Image
 from config import CGF
 import streamlit as st
+import numpy as np
 
 # 동일한 이미지 크기로 만들기 위한 함수
 def resize_image(image_path,image_size):
@@ -11,6 +12,15 @@ def resize_image(image_path,image_size):
     image = Image.open(BytesIO(res))
     resized_image = image.resize(image_size)
     return resized_image     
+
+# 
+@st.cache
+def get_init_beers(beer_list, beer_dict):
+    # TODO 보여줄 맥주 알고리즘 
+    beer_list = np.random.choice(beer_list, CGF.num_items)
+    beer_img_link = [f'https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_{beer_dict[beer_name]}' for beer_name in beer_list]
+    return beer_list, beer_img_link
+
 
 
 # radio-box로 지정한 rate를 저장해주는 함수

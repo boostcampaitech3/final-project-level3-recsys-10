@@ -1,6 +1,6 @@
 import streamlit as st
 
-from utils import post_feedback, resize_image, save_rate,get_recommended_beer,get_info,get_grid,get_cols,post_feedback
+from utils import post_feedback, resize_image, save_rate,get_recommended_beer,get_info,get_grid,get_cols,post_feedback, get_init_beers
 from config import CGF
 
 #################################
@@ -44,8 +44,9 @@ st.header("맥주에 대해 평가해 주세요")
 # streamlit은 grid 방식을 지원하지 않기 때문에 columns로 hard coding 
 row, col = get_grid(CGF.num_items)
 total_cols = get_cols(row, col)
+beer_list ,beer_img_link =get_init_beers(beer_list, beer_dict)
 
-for col, beer, image_path in zip(total_cols, beer_list, beer_img_link): 
+for col, beer, image_path in zip(total_cols, beer_list , beer_img_link): 
     # TODO beer_list,beer_img_link 는 DP와 연동해주세요
     with col:
         st.image(resize_image(image_path, CGF.image_size))
