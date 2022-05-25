@@ -2,6 +2,7 @@ import urllib.request
 from io import BytesIO
 from PIL import Image
 from config import CGF
+import streamlit as st
 
 # 동일한 이미지 크기로 만들기 위한 함수
 def resize_image(image_path,image_size):
@@ -10,6 +11,7 @@ def resize_image(image_path,image_size):
     image = Image.open(BytesIO(res))
     resized_image = image.resize(image_size)
     return resized_image     
+
 
 # radio-box로 지정한 rate를 저장해주는 함수
 def save_rate(beer_dict, beer, option_rate, coldstart_data):
@@ -30,11 +32,22 @@ def transform_rate(option_rate):
         rate =  CGF.UNKNOWN
     return rate
 
-# 키워드 칼럼 결정
+# st.columns를 grid 형식으로 하기위한 함수
 def get_grid(num_item):
     row = num_item // CGF.max_col
-    rest_col = num_item - (row*num_item)
-    return row+1, rest_col
+    return row, CGF.max_col
+
+def get_cols(row, col):
+    total_cols = []
+    for r in range(row):
+        cols = []
+        for c in range(col):
+            globals()[f'col_{r}_{c}'] = 0
+        cols = st.columns(col)
+        
+        total_cols.extend(cols)
+
+    return total_cols
 
 
 # 맥주추천 결과 받아오는 함수
@@ -46,10 +59,20 @@ def get_recommended_beer():
     # beer_id를 반환합니다.
     return tmp_dict.values() 
 
+
 # beer_id로 맥주정보를 받아오는 함수
 def get_info(beer_id):
     # TODO beer_id로 필요한 데이터를 조합해주세요
     image_path =  f'https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_{beer_id}'
     beer_name = 'Heineken'
     return {'imageUrl' : image_path, 'beerName':beer_name}
+
+
+# 추천 결과 피드백 제출
+def post_feedback(r_beer_id, button):
+    if button == "좋아요":
+        return r_beer_id, CGF.LIKE
+    elif button == "싫어요":
+        return r_beer_id, CGF.UNLIKE
+
 

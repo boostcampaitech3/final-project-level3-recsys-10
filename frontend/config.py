@@ -1,7 +1,8 @@
 class CGF:
-    # 칼럼 갯수 
+    # coldstart 칼럼과 아이템 개수 
     max_col = 4
-    
+    num_items = 12 # max_col의 배수로 지정해주세요
+
     # radio-box 에 들어갈 옵션
     options = ["좋아요😊", "몰라요🙄", "싫어요😠"]
 
