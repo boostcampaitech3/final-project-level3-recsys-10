@@ -2,6 +2,8 @@
 */data
 data/
 */SLIM
+db_config.yaml
+
 
 # data
 *.json
