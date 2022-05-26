@@ -1,26 +1,43 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, VARCHAR, DateTime, Float
 from sqlalchemy.orm import relationship
 
 from database import Base
 
+from datetime import datetime
 
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = "user"
 
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    is_active = Column(Boolean, default=True)
+    userID = Column(Integer, primary_key=True, index=True)
+    password = Column(VARCHAR(20), nullable=False)
+    profileName = Column(VARCHAR(50), nullable=False)
+    gender = Column(VARCHAR(1), nullable=False)
+    birth = Column(DateTime, nullable=False, default=datetime.now)
 
-    items = relationship("Item", back_populates="owner")
+    review = relationship("Review", backref="user")
 
+class Beer(Base):
+    __tablename__ = "beer"
 
-class Item(Base):
-    __tablename__ = "items"
+    beerId = Column(Integer, primary_key=True)
+    beerName = Column(VARCHAR(100), nullable=False)
+    brewerID = Column(Integer, nullable=False)
+    ABV = Column(Float, nullable=True)
+    style = Column(VARCHAR(50), nullable=False)
+    imageUrl = Column(VARCHAR, nullable=True)
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(String, index=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
+    review = relationship("Review", backref="beer")
 
-    owner = relationship("User", back_populates="items")
+class Review(Base):
+    __tablename__ = "review"
+
+    userID = Column(Integer, ForeignKey("user.userID"), primary_key=True)
+    beerID = Column(Integer, ForeignKey("beer.beerId"), primary_key=True)
+    reviewScore = Column(Float, nullable=False)
+    reviewText = Column(VARCHAR, nullable=True)
+    reviewTime = Column(DateTime, nullable=False, default=datetime.now)
+    appearance = Column(Float, nullable=True)
+    aroma = Column(Float, nullable=True)
+    palate = Column(Float, nullable=True)
+    taste = Column(Float, nullable=True)
+    overall = Column(Float, nullable=True)
