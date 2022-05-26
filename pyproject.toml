@@ -13,6 +13,11 @@ pandas = "1.0.0"
 pydentic = "^0.0.1-alpha.3"
 streamlit = "^1.9.0"
 make = "^0.1.6"
+psycopg2 = "^2.9.3"
+psycopg2-binary = "^2.9.3"
+SQLAlchemy = "^1.4.36"
+sqlmodel = "^0.0.6"
+PyYAML = "^6.0"
 
 [tool.poetry.dev-dependencies]
 
