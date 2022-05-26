@@ -1,4 +1,8 @@
+
 import streamlit as st
+
+from requests import request
+import requests
 
 from utils import post_feedback, resize_image, save_rate,get_recommended_beer,get_info,get_grid,get_cols,post_feedback, get_init_beers
 from config import CGF
@@ -26,8 +30,8 @@ beer_img_link = ['https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_de
 'https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_48076',
 'https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_48076',
 'https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_48076',
-'https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_48076',]
-
+'https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_48076',
+'https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_48076']
 
 #################################
 # 저장변수
@@ -35,7 +39,7 @@ coldstart_data = {}
 keywords=[]
 
 ##################################
-# streamlit 실행.
+# streamlit 실행
 st.title("도전맥주홀릭")
 
 # coldstart 맥주 평가
@@ -54,7 +58,6 @@ for col, beer, image_path in zip(total_cols, beer_list , beer_img_link):
             beer, CGF.options, key = col
         )
         save_rate(beer_dict, beer, option_rate, coldstart_data)
-
 
 # 추천 키워드 선택
 st.header("추천에 원하는 키워드를 선택해보세요")

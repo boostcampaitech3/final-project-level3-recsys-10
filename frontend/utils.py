@@ -2,8 +2,10 @@ import urllib.request
 from io import BytesIO
 from PIL import Image
 from config import CGF
+
 import streamlit as st
 import numpy as np
+
 
 # 동일한 이미지 크기로 만들기 위한 함수
 def resize_image(image_path,image_size):
@@ -12,6 +14,7 @@ def resize_image(image_path,image_size):
     image = Image.open(BytesIO(res))
     resized_image = image.resize(image_size)
     return resized_image     
+
 
 # 
 @st.cache
@@ -84,5 +87,3 @@ def post_feedback(r_beer_id, button):
         return r_beer_id, CGF.LIKE
     elif button == "싫어요":
         return r_beer_id, CGF.UNLIKE
-
-
