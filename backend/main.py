@@ -100,7 +100,8 @@ def preference_select(products : dict,
 
     topk_pred, topk_rating = predict_from_select_beer(model, products)
     dic = {str(name):value for name, value in zip(topk_pred,topk_rating)}
-   
+    print("-----dic-----")
+    print(dic)
     return dic
 
 
