@@ -1,39 +1,13 @@
-from itertools import product
 from fastapi import FastAPI
+from fastapi.param_functions import Depends
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict
 
 from datetime import datetime
-
+from model.model import AutoRec, get_model , predict_from_select_beer
 app = FastAPI()
 
-product_list = ["Sapporo Premium Beer / Draft Beer ", 
-"Tsingtao Premium Stout 4.8%",
-"Tsingtao Draft Beer 11º (Pure Draft Beer)",
-"Heineken",
-"Heineken Dark Lager",
-"Heineken Premium Light"]
-
-product_images_list = ["https://www.ratebeer.com/beer/sapporo-premium-beer-draft-beer/729/](https://www.ratebeer.com/beer/sapporo-premium-beer-draft-beer/729/",
-
-"https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_567803](https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_567803",
-
-"https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_64518](https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_64518",
-
-"https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_37](https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_37",
-
-"https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_34662](https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_34662",
-
-"https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_48076](https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_48076"]
-
-rec_list = ["Cass Fresh",
-"Cass light"
-]
-
-@app.get("/")
-def hello_world():
-    return {"hello": "world"}
 
 class Product(BaseModel):
     id: str
@@ -85,25 +59,20 @@ class InferenceRecProduct(Product):
 # def get_order_by_id(order_id: int):
 #     return product_list[order_id]
 
-@app.post("/select", description="유저가 선호하는 맥주를 선택합니다")
-def preference_select(products : dict):
-    beer_list = []
-    for key,value in enumerate(products):
-        user_beer =  Rec_Product(id=value, score=key, img="imgs")
-        beer_list.append(user_beer)
-    order = Order(products=beer_list)
-    return order
+# @app.post("/select", description="유저가 선호하는 맥주를 선택합니다")
+# def preference_select(products : dict):
+#     beer_list = []
+#     for key,value in enumerate(products):
+#         user_beer =  Rec_Product(id=value, score=key, img="imgs")
+#         beer_list.append(user_beer)
+#     order = Order(products=beer_list)
+#     return order
 
-# @app.post("/order/", description="맥주 추천을 요청합니다.")
-# def make_order() -> Order:
-    
-#     products =[]
-#     for _ in product_list:
-#         Inference_result = rec_list
-#         product = InferenceRecProduct(result=Inference_result)
-#         products.append(product)
+@app.post("/select", description="유저가 선호하는 맥주를 선택합니다",  response_model=dict)
+def preference_select(products : dict,
+                      model : AutoRec = Depends(get_model)):
 
-#     new_order = Order(products=products)
-
-    
-#     return new_order
+    topk_pred, topk_rating = predict_from_select_beer(model, products)
+    dic = {str(name):value for name, value in zip(topk_pred,topk_rating)}
+   
+    return dic
