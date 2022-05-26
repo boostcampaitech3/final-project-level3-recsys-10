@@ -8,32 +8,6 @@ from datetime import datetime
 from model.model import AutoRec, get_model , predict_from_select_beer
 app = FastAPI()
 
-product_list = ["Sapporo Premium Beer / Draft Beer ", 
-"Tsingtao Premium Stout 4.8%",
-"Tsingtao Draft Beer 11º (Pure Draft Beer)",
-"Heineken",
-"Heineken Dark Lager",
-"Heineken Premium Light"]
-
-product_images_list = ["https://www.ratebeer.com/beer/sapporo-premium-beer-draft-beer/729/](https://www.ratebeer.com/beer/sapporo-premium-beer-draft-beer/729/",
-
-"https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_567803](https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_567803",
-
-"https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_64518](https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_64518",
-
-"https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_37](https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_37",
-
-"https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_34662](https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_34662",
-
-"https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_48076](https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_48076"]
-
-rec_list = ["Cass Fresh",
-"Cass light"
-]
-
-@app.get("/")
-def hello_world():
-    return {"hello": "world"}
 
 class Product(BaseModel):
     id: str
@@ -102,18 +76,3 @@ def preference_select(products : dict,
     dic = {str(name):value for name, value in zip(topk_pred,topk_rating)}
    
     return dic
-
-
-# @app.post("/order/", description="맥주 추천을 요청합니다.")
-# def make_order() -> Order:
-    
-#     products =[]
-#     for _ in product_list:
-#         Inference_result = rec_list
-#         product = InferenceRecProduct(result=Inference_result)
-#         products.append(product)
-
-#     new_order = Order(products=products)
-
-    
-#     return new_order

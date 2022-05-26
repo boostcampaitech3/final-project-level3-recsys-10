@@ -34,12 +34,7 @@ st.header("맥주에 대해 평가해 주세요")
 beer_df = get_beer_info()
 row, col = get_grid(CGF.num_items)
 total_cols = get_cols(row, col)
-# beer_list ,beer_img_link =get_init_beers(beer_list, beer_dict)
 beer_list ,beer_img_link =get_init_beers(beer_df)
-# print("---beer_list------")
-# print(beer_list)
-# print("----ber_img_link------")
-# print(beer_img_link)
 for col, beer, image_path in zip(total_cols, beer_list , beer_img_link): 
     # TODO beer_list,beer_img_link 는 DP와 연동해주세요
     # beer : BeerName , str
@@ -58,8 +53,6 @@ keywords = st.multiselect('여러개 선택가능!', CGF.rec_keywords)
 coldstart_button = st.button('제출')
 
 if coldstart_button: 
-    # st.write(coldstart_data)
-    # st.write(keywords)
     # TODO 여기서 POST를 해주세요
     data_load_state = st.text('맥주 추천중...')
     response = requests.post("http://localhost:8001/select", json=coldstart_data)

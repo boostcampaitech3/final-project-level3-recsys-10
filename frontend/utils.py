@@ -27,17 +27,10 @@ def get_init_beers(beer_df : pd.DataFrame):
 
     return beer_list, beer_img_link
 
-# @st.cache
-# def get_init_beers(beer_list, beer_dict):
-#     # TODO 보여줄 맥주 알고리즘 
-#     beer_list = np.random.choice(beer_list, CGF.num_items)
-#     beer_img_link = [f'https://res.cloudinary.com/ratebeer/image/upload/d_beer_img_default.png,f_auto/beer_{beer_dict[beer_name]}' for beer_name in beer_list]
-#     return beer_list, beer_img_link
 
 
 @st.cache
 def get_beer_info():
-    #return pd.read_json("data/ratebeer_korea.json").drop_duplicates()
     return pd.read_csv('data/ratebeer_label_encoding.csv')
 
 # radio-box로 지정한 rate를 저장해주는 함수
@@ -79,8 +72,6 @@ def get_cols(row, col):
 
 # 맥주추천 결과 받아오는 함수
 def get_recommended_beer(response : dict):  
-    # TODO inference 결과를 받아와 주세요 / return 값은 beer_id가 좋을 것 같습니다.
-    
     # beer_id를 반환합니다.
     return response.keys() 
 

@@ -32,8 +32,6 @@ def get_model(model_path: str = "model/autorec_crawling.pt")-> AutoRec:
     return model
 
 def _transform(data : dict):
-    # TODO list to matrix
-    # TODO list to label encoding
     beer_mapping = pd.read_csv('data/ratebeer_label_encoding.csv')
     x_test = [0 for _ in range(beer_mapping.shape[0])]
     for key, value in data.items():
@@ -43,8 +41,6 @@ def _transform(data : dict):
     return x_test
 
 def re_transform(topk_pred_list_idx : list):
-    # TODO list to matrix
-    # TODO list to label encoding
     beer_mapping = pd.read_csv('data/ratebeer_label_encoding.csv')
     topk_pred_list_item = []
     for idx in topk_pred_list_idx:
@@ -71,9 +67,6 @@ def predict_from_select_beer(model: AutoRec , data : dict):
 def indexing_from_model(rating_pred : list, topk :int = 4):
     # topk 맥주 index
     ind = np.argpartition(rating_pred, -topk)[-topk:]
-    # topk 맥주 index별 평점
-    arr_ind = rating_pred[ind]
-
     # topk 맥주 index별 평점
     arr_ind = rating_pred[ind]
 
