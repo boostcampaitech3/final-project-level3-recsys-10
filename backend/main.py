@@ -1,11 +1,11 @@
-from itertools import product
 from fastapi import FastAPI
+from fastapi.param_functions import Depends
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict
 
 from datetime import datetime
-
+from model.model import AutoRec, get_model , predict_from_select_beer
 app = FastAPI()
 
 product_list = ["Sapporo Premium Beer / Draft Beer ", 
@@ -85,14 +85,25 @@ class InferenceRecProduct(Product):
 # def get_order_by_id(order_id: int):
 #     return product_list[order_id]
 
-@app.post("/select", description="유저가 선호하는 맥주를 선택합니다")
-def preference_select(products : dict):
-    beer_list = []
-    for key,value in enumerate(products):
-        user_beer =  Rec_Product(id=value, score=key, img="imgs")
-        beer_list.append(user_beer)
-    order = Order(products=beer_list)
-    return order
+# @app.post("/select", description="유저가 선호하는 맥주를 선택합니다")
+# def preference_select(products : dict):
+#     beer_list = []
+#     for key,value in enumerate(products):
+#         user_beer =  Rec_Product(id=value, score=key, img="imgs")
+#         beer_list.append(user_beer)
+#     order = Order(products=beer_list)
+#     return order
+
+@app.post("/select", description="유저가 선호하는 맥주를 선택합니다",  response_model=dict)
+def preference_select(products : dict,
+                      model : AutoRec = Depends(get_model)):
+
+    topk_pred, topk_rating = predict_from_select_beer(model, products)
+    dic = {str(name):value for name, value in zip(topk_pred,topk_rating)}
+    print("-----dic-----")
+    print(dic)
+    return dic
+
 
 # @app.post("/order/", description="맥주 추천을 요청합니다.")
 # def make_order() -> Order:

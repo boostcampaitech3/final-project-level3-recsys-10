@@ -6,6 +6,7 @@ data/
 # data
 *.json
 *.csv
+/data
 
 # file
 .ipynb_checkpoints
