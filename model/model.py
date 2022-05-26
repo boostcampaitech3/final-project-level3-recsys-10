@@ -34,10 +34,10 @@ def get_model(model_path: str = "model/autorec_crawling.pt")-> AutoRec:
 def _transform(data : dict):
     # TODO list to matrix
     # TODO list to label encoding
-    beer_mapping = pd.read_csv('model/mapping_Beer.csv')
+    beer_mapping = pd.read_csv('data/ratebeer_label_encoding.csv')
     x_test = [0 for _ in range(beer_mapping.shape[0])]
     for key, value in data.items():
-        encoding_key = int(beer_mapping[beer_mapping['item']==int(key)]['item_id_idx'].values)
+        encoding_key = int(beer_mapping[beer_mapping['beerID']==int(key)]['item_id_idx'].values)
         x_test[encoding_key] = float(value)
 
     return x_test
@@ -45,10 +45,10 @@ def _transform(data : dict):
 def re_transform(topk_pred_list_idx : list):
     # TODO list to matrix
     # TODO list to label encoding
-    beer_mapping = pd.read_csv('model/mapping_Beer.csv')
+    beer_mapping = pd.read_csv('data/ratebeer_label_encoding.csv')
     topk_pred_list_item = []
     for idx in topk_pred_list_idx:
-        item = beer_mapping[beer_mapping['item_id_idx']==idx]['item'].values
+        item = beer_mapping[beer_mapping['item_id_idx']==idx]['beerID'].values
         topk_pred_list_item.extend(item)
 
     return topk_pred_list_item
