@@ -16,7 +16,7 @@ class UserCreate(User):
     despription: 새로운 유저 추가
     application: 회원가입
     """
-    password: int
+    password: str
     gender: str
     birth: datetime = Field(default_factory=datetime.now)
 
