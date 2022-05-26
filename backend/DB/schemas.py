@@ -80,7 +80,6 @@ class BeerRecommends(BaseModel):
     description: 유저에게 보여줄 추천 맥주의 목록.
     """
     recommended_beers: List[Beer] = Field(default_factory=list) 
-    assert len(recommended_beers) == 4, "추천의 결과는 4개가 나와야합니다."
 
 # 현재 사용되고 있지는 않는 부분
 # class UserReviewsUpdate(BaseModel):
