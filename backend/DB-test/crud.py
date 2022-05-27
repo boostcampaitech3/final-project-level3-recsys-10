@@ -12,8 +12,13 @@ def get_beer(db: Session, beer_id: int):
 def create_user(db: Session, user: schemas.UserCreate):
     # fake_hashed_password = user.password + "notreallyhashed"
     fake_hashed_password = user.password
-    db_user = models.User(user_id=user.userID, password=fake_hashed_password, profile_name=user.profileName,
-                        gender=user.gender, birth=user.birth)
+    db_user = models.User(
+                    user_id=user.user_id, 
+                    password=fake_hashed_password, 
+                    profile_name=user.profile_name,
+                    gender=user.gender, 
+                    birth=user.birth
+                )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

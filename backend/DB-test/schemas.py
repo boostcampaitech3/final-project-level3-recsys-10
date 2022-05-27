@@ -3,28 +3,38 @@ from pydantic import BaseModel, Field
 from uuid import UUID, uuid4
 from datetime import datetime
 
-class UserID(BaseModel):
-    userID: int
+# class UserID(BaseModel):
+#     user_id: int
 
-class User(BaseModel):
-    class Config:
-        orm_mode = True
+
+class UserBase(BaseModel):
     """
     description: 유저 한 명에 대한 정보
     """
-    userID: int
-    profileName: str
+    user_id: int = Field(None)
+    profile_name: str = Field(None)
 
-
-class UserCreate(User):
-
+class UserCreate(UserBase):
     """
     despription: 새로운 유저 추가
     application: 회원가입
     """
-    password: str
-    gender: str
+    password: str = Field(None)
+    gender: str = Field(None)
     birth: datetime = Field(default_factory=datetime.now)
+
+class User(UserBase):
+    """
+    description: 유저 한 명에 대한 정보 (조회용)
+    """
+    password: str = Field(None)
+    gender: str = Field(None)
+    birth: datetime = Field(default_factory=datetime.now)
+    class Config:
+        orm_mode = True
+
+
+
 
 class Beer(BaseModel):
     """

@@ -25,9 +25,9 @@ def get_db():
         db.close()
 
 # 회원가입
-@app.post("/register", response_model=schemas.UserCreate)
+@app.post("/register", response_model=schemas.User)
 def signup_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user(db, user_id=user.userID)
+    db_user = crud.get_user(db, user_id=user.user_id)
     if db_user:
         raise HTTPException(status_code=400, detail="Error 발생!")
     return crud.create_user(db=db, user=user)
