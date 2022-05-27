@@ -4,10 +4,10 @@ import models
 import schemas
 
 def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.userid == user_id).first()
+    return db.query(models.User).filter(models.User.user_id == user_id).first()
 
 def get_beer(db: Session, beer_id: int):
-    return db.query(models.Beer).filter(models.Beer.beerid == beer_id).first()
+    return db.query(models.Beer).filter(models.Beer.beer_id == beer_id).first()
 
 def create_user(db: Session, user: schemas.UserCreate):
     # fake_hashed_password = user.password + "notreallyhashed"
