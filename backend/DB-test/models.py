@@ -9,10 +9,10 @@ class User(Base):
     __tablename__ = "reviewer"
 
     user_id = Column(Integer, primary_key=True)
-    password = Column(VARCHAR(30), nullable=False)
+    password = Column(VARCHAR(35), nullable=False)
     profile_name = Column(VARCHAR(50), nullable=False)
-    gender = Column(VARCHAR(1), nullable=False)
-    birth = Column(DateTime, nullable=False, default=datetime.now)
+    gender = Column(VARCHAR(1), nullable=True)
+    birth = Column(DateTime, nullable=True, default=datetime.now)
 
     review = relationship("Review", backref="reviewer")
 
