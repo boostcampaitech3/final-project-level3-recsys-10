@@ -3,15 +3,11 @@ from pydantic import BaseModel, Field
 from uuid import UUID, uuid4
 from datetime import datetime
 
-# class UserID(BaseModel):
-#     user_id: int
-
-
 class UserBase(BaseModel):
     """
     description: 유저 한 명에 대한 정보
     """
-    user_id: int = Field(None)
+    user_id: int = Field(None) 
     profile_name: str = Field(None)
 
 class UserCreate(UserBase):
@@ -19,6 +15,7 @@ class UserCreate(UserBase):
     despription: 새로운 유저 추가
     application: 회원가입
     """
+    # user_id: int = Field(None) # UUID = Field(default_factory=uuid4)
     password: str = Field(None)
     gender: str = Field(None)
     birth: datetime = Field(default_factory=datetime.now)
@@ -33,21 +30,19 @@ class User(UserBase):
     class Config:
         orm_mode = True
 
-
-
-
 class Beer(BaseModel):
     """
     description: 맥주 하나에 대한 정보
     """
     # 맥주 하나에 대한 정보
-    beerName: str
-    beerID: int
-    brewerID: int
-    ABV: float
-    style: str
-    imageUrl: str
-
+    beer_id: int = Field(None)
+    beer_name: str = Field(None)
+    brewer_id: int = Field(None)
+    abv: float = Field(None)
+    style: str = Field(None)
+    image_url: str = Field(None)
+    class Config:
+        orm_mode = True
 
 # 지금은 사용하지 않는 기능
 # class BeerCreate(Beer):
@@ -62,11 +57,11 @@ class BeerReview(BaseModel):
     description: 하나의 맥주 리뷰. # 지금 현재, 사용하는 인자만 활성화 시켜놓았음.
     application: cold startproblem
     """
-    # userID : int
-    beerID : int
-    reviewScore : float
-    # reviewText : str
-    reviewTime : datetime = Field(default_factory=datetime.now)
+    # user_id : int
+    beer_id : int
+    reviewscore : float
+    # reviewtext : str
+    reviewtime : datetime = Field(default_factory=datetime.now)
     # appearance : float
     # aroma : float
     # palate: float
@@ -78,7 +73,7 @@ class UserReviews(BaseModel):
     """
     description: 한 명의 유저가 평가한 맥주 리뷰 목록
     """
-    userID: int
+    user_id: int
     review_beers: List[BeerReview] = Field(default_factory=list) 
 
     def add_reivew(self, single_beer_review: BeerReview):
