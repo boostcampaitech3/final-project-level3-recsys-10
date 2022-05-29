@@ -1,5 +1,5 @@
 run_server:
-	python3 -m backend
+	python3 -m backend.app
 
 run_client:
 	python3 -m streamlit run frontend/ui.py --server.port 30003
