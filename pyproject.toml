@@ -18,6 +18,7 @@ psycopg2-binary = "^2.9.3"
 SQLAlchemy = "^1.4.36"
 sqlmodel = "^0.0.6"
 PyYAML = "^6.0"
+torch = "1.10.0"
 
 [tool.poetry.dev-dependencies]
 
