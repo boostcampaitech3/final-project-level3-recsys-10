@@ -8,6 +8,23 @@ from datetime import datetime
 from ..recommendAPI.model import AutoRec, get_model , predict_from_select_beer
 from .routers import users, beers, reviewers
 
+from sqlalchemy.orm import Session
+import backend.app.DB.crud as crud
+import backend.app.DB.schemas as schemas
+from backend.app.DB.database import SessionLocal, engine
+import backend.app.DB.models as models
+
+# DB 서버에 연결
+models.Base.metadata.create_all(bind=engine)
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 app = FastAPI()
 
 app.include_router(users.router)
@@ -73,11 +90,26 @@ class InferenceRecProduct(Product):
 #     order = Order(products=beer_list)
 #     return order
 
-@app.post("/select", description="유저가 선호하는 맥주를 선택합니다",  response_model=dict)
+# @app.post("/select", description="유저가 선호하는 맥주를 선택합니다",  response_model=dict)
+# def preference_select(products : dict,
+#                       model : AutoRec = Depends(get_model)):
+
+#     topk_pred, topk_rating = predict_from_select_beer(model, products)
+#     dic = {str(name):value for name, value in zip(topk_pred,topk_rating)}
+#     return dic
+
+@app.post("/select", description="유저가 선호하는 맥주를 선택합니다", response_model=List[schemas.Beer])
 def preference_select(products : dict,
-                      model : AutoRec = Depends(get_model)):
+                      model : AutoRec = Depends(get_model),
+                      db: Session = Depends(get_db)):
 
     topk_pred, topk_rating = predict_from_select_beer(model, products)
-    dic = {str(name):value for name, value in zip(topk_pred,topk_rating)}
-    print(dic)
-    return dic
+    
+    RecommendedBeer_1 = crud.get_beer(db, beer_id = int(topk_pred[0])) # Beer
+    RecommendedBeer_2 = crud.get_beer(db, beer_id = int(topk_pred[1]))
+    RecommendedBeer_3 = crud.get_beer(db, beer_id = int(topk_pred[2]))
+    RecommendedBeer_4 = crud.get_beer(db, beer_id = int(topk_pred[3]))
+
+    # print(">>>>", RecommendedBeer_1.beer_id)
+
+    return [RecommendedBeer_1, RecommendedBeer_2, RecommendedBeer_3, RecommendedBeer_4]
