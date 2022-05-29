@@ -22,8 +22,8 @@ class AutoRec(nn.Module):
         
         return pred
 
-# TODO 상대경로를 어떻게 찾나.. 절대경로 에반대
-def get_model(model_path: str = "model/autorec_crawling.pt")-> AutoRec:
+
+def get_model(model_path: str = "backend/recommendAPI/autorec_crawling.pt")-> AutoRec:
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = AutoRec(num_hidden, num_items).to(device)

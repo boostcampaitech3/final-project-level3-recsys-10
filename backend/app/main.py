@@ -5,9 +5,14 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Dict
 
 from datetime import datetime
-from model.model import AutoRec, get_model , predict_from_select_beer
+from ..recommendAPI.model import AutoRec, get_model , predict_from_select_beer
+from .routers import users, beers, reviewers
+
 app = FastAPI()
 
+app.include_router(users.router)
+app.include_router(beers.router)
+app.include_router(reviewers.router)
 
 class Product(BaseModel):
     id: str
@@ -74,5 +79,5 @@ def preference_select(products : dict,
 
     topk_pred, topk_rating = predict_from_select_beer(model, products)
     dic = {str(name):value for name, value in zip(topk_pred,topk_rating)}
-   
+    print(dic)
     return dic
