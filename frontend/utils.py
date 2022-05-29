@@ -3,6 +3,9 @@ from io import BytesIO
 from PIL import Image
 from config import CGF
 
+from typing import List
+from backend.app.DB import schemas, crud
+
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -26,7 +29,6 @@ def get_init_beers(beer_df : pd.DataFrame):
         beer_img_link.extend(img_link)
 
     return beer_list, beer_img_link
-
 
 
 @st.cache
@@ -71,9 +73,9 @@ def get_cols(row, col):
 
 
 # 맥주추천 결과 받아오는 함수
-def get_recommended_beer(response : dict):  
+def get_recommended_beer(response : List[schemas.Beer]):  
     # beer_id를 반환합니다.
-    return response.keys() 
+    return [Beer['beer_id'] for Beer in response] #response#.keys() 
 
 
 # beer_id로 맥주정보를 받아오는 함수
