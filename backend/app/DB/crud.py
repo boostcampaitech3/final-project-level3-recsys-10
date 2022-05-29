@@ -1,3 +1,5 @@
+# DB에 연결하여 직접적으로 Create(생성), Read(읽기), Update(갱신), Delete(삭제) 와 관련한 모듈들은 담당하는 곳
+
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
