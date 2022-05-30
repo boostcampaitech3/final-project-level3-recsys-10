@@ -1,3 +1,4 @@
+from pydoc import describe
 from fastapi import FastAPI
 from fastapi.param_functions import Depends
 from uuid import UUID, uuid4
@@ -9,6 +10,7 @@ from ..recommendAPI.model import AutoRec, get_model , predict_from_select_beer
 from .routers import users, beers, reviewers
 
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import text
 import backend.app.DB.crud as crud
 import backend.app.DB.schemas as schemas
 from backend.app.DB.database import SessionLocal, engine
@@ -113,3 +115,8 @@ def preference_select(products : dict,
     # print(">>>>", RecommendedBeer_1.beer_id)
 
     return [RecommendedBeer_1, RecommendedBeer_2, RecommendedBeer_3, RecommendedBeer_4]
+
+@app.post("/coldstart", description= "유저에게 보여줄 맥주의 리스트를 보여줍니다", response_model=List[schemas.Beer])
+def showing_coldstart(db: Session = Depends(get_db)):
+    coldstart_beers  = crud.get_coldstart_beer()
+    return coldstart_beers
