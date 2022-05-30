@@ -6,7 +6,8 @@ from .. import main
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from ..DB.database import SessionLocal, engine
-from ..DB import schemas, models
+from ..DB import schemas, models,crud
+from ...recommendAPI.model import AutoRec, get_model , predict_from_select_beer
 
 router = APIRouter()
 
@@ -29,16 +30,26 @@ async def recommend(request: Request, db: Session = Depends(get_db)):
     return main.templates.TemplateResponse("recommend.html", {"request": request, "beers": beers})
 
 @router.post(path="/recommend")
-async def prefer(request: Request, response: Response, call_next, db: Session = Depends(get_db)):
-    # DB에 데이터 저장 및 모델에 사용자 정보 넘기기
-    # response = await call_next(request)
-    print("----------start------------")
+async def prefer(request: Request, 
+                db: Session = Depends(get_db),
+                model : AutoRec = Depends(get_model)):
     data_b = await request.body()
-    print("-----------------data_b--------------------")
-    print(data_b)
-    result = vehicle_detector.detect(data_b)
-    print("--------result--------")
-    print(result)
-    return JSONResponse(result)
-    # print(formData)
-    # return RedirectResponse(url="/recommendResult", status_code=301)
+    data_b = str(data_b, 'utf-8')
+    data_b = data_b.split('&') # 리스트
+
+    data_dict = {}
+    for i in data_b:
+        beer_id, rate = i.split('=')
+        data_dict[int(beer_id)] = int(rate)
+
+    topk_pred, topk_rating = predict_from_select_beer(model, data_dict)
+    
+    RecommendedBeer_1 = crud.get_beer(db, beer_id = int(topk_pred[0])) # Beer
+    RecommendedBeer_2 = crud.get_beer(db, beer_id = int(topk_pred[1]))
+    RecommendedBeer_3 = crud.get_beer(db, beer_id = int(topk_pred[2]))
+    RecommendedBeer_4 = crud.get_beer(db, beer_id = int(topk_pred[3]))
+
+    # print(">>>>", RecommendedBeer_1.beer_id)
+    print([RecommendedBeer_1.beer_id, RecommendedBeer_2.beer_id, RecommendedBeer_3.beer_id, RecommendedBeer_4.beer_id])
+    return [RecommendedBeer_1, RecommendedBeer_2, RecommendedBeer_3, RecommendedBeer_4]
+   # return data_dict
