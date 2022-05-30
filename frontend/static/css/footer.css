@@ -1,0 +1,18 @@
+
+html, body {
+    height: 100%
+}
+
+.container {
+    min-height: 75%;
+    position: relative;
+}
+
+footer {
+    position: relative; 
+    transform: translatY(-100%);
+    padding-bottom: 20px;
+    font-family: 'Nanum Gothic', sans-serif;
+    text-align: center;
+    font-size: 12px;
+}
