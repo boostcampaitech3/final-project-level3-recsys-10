@@ -5,6 +5,7 @@ import random
 
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from sqlalchemy.sql import text
 
 from . import models
 from . import schemas
@@ -90,5 +91,6 @@ def get_coldstart_beer(db: Session):
         else:
             ids.extend(numpy.random.choice(tmp['beerId'].values, 4,replace=False))
     random.shuffle(ids)  
+    ids = [int(i) for i in ids]
 
-    return ids
+    return db.query(models.Beer).filter(models.Beer.beer_id.in_(ids)).all()

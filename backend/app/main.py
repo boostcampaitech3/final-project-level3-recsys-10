@@ -118,5 +118,5 @@ def preference_select(products : dict,
 
 @app.post("/coldstart", description= "유저에게 보여줄 맥주의 리스트를 보여줍니다", response_model=List[schemas.Beer])
 def showing_coldstart(db: Session = Depends(get_db)):
-    coldstart_beers  = crud.get_coldstart_beer()
+    coldstart_beers  = crud.get_coldstart_beer(db)
     return coldstart_beers
