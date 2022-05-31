@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Form
 from fastapi.param_functions import Depends
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
@@ -37,6 +37,16 @@ app.include_router(reviewers.router)
 
 templates = Jinja2Templates(directory="frontend/templates")
 app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
+
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("nickname_login.html", {"request": request})
+
+@app.post("/")
+async def index(request: Request, nickname: str = Form(...)):
+    print(nickname)
+    return 1
+    # return templates.TemplateResponse("nickname_login.html", {"request": request})
 
 class Product(BaseModel):
     id: str
