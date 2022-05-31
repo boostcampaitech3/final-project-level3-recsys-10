@@ -42,3 +42,10 @@
     grid-template-columns: auto auto;
     column-gap: 10px;
 }
+
+#complete{
+    border-radius: 5px;
+    border: 1px solid #bababa;
+    float: right;
+    background-color: #ffffff;
+}
