@@ -36,7 +36,7 @@ app.include_router(beers.router)
 app.include_router(reviewers.router)
 
 templates = Jinja2Templates(directory="frontend/templates")
-app.mount("/static", StaticFiles(directory="frontend/static"), name="static") 
+app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 
 class Product(BaseModel):
     id: str
