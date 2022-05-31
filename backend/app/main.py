@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request, Form, Response
+from starlette.responses import RedirectResponse
+from fastapi import FastAPI, Request, Form, Response, Cookie
 from fastapi.param_functions import Depends
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
@@ -50,21 +51,24 @@ async def index(request: Request, response: Response, nickname: str = Form(...),
         # 이 부분 이미 지정된 이름입니다. 화면 노출시키고, 그리고 이전 페이지로 반환하는 버튼 
         print(isexist)
         return {"msg":"아이디가 중복됩니다. 새로고침 해주세요!"}
-
+        
+    # Cookie
     # 새로운 유저 정보 등록
     new_user = schemas.UserCreate()
     new_user.profile_name = nickname # user_id, gender, birth 아직은 관련 정보를 받지 않을 예정, 그러나 birth는 아이디 생성 시간으로 기록될 예정
     new_user.gender = "X"
     new_user.password = "BoostcampOnlineTest"
     crud.create_user(db, user = new_user)
-
+    
     # 쿠키에 유저 이름 등록
     response.set_cookie(key="profile_name", value=nickname)
 
-    return templates.TemplateResponse("index.html", {"request": request})
+    # return templates.TemplateResponse("index.html", {"request": request})
+    return RedirectResponse(url="/index", status_code=301)
+
 
 @app.get("/testlogin")
-def get_add(request: Request, response: Response):
+def get_add(request: Request, response: Response, cookies: Optional[dict]):
     return request.cookies["profile_name"]
 
 
