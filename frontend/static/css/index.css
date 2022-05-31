@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+
+.header nav a{
+    color: #d0d0d0;
+}
+
+.intro{
+    background-color: #020a15;
+    font-family: 'Nanum Gothic', sans-serif;
+    color: #FFFFFF;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    padding: 40px;
+    margin-top: 20px;
+}
+
+.intro > h1{
+    color: #efeb8b;
+    font-weight: bold;
+}
+
+.intro > p{
+    color: #d0d0d0;
+}
+
+.intro > .rec-beer-btn{
+    color: #ffc000;
+    background-color: #020a15;
+    border: none;
+}
+
+#contour{
+    background-color: #d2d2d7;
+    margin: 20px 0 20px 0;
+}
+
+.beer-page{
+    display: grid;
+    grid-template-columns: repeat(6, auto);
+    column-gap: 4px;
+}
+
+.beer{
+    font-family: 'Nanum Gothic', sans-serif;
+    display: grid;
+    grid-template-rows: auto auto;
+    place-items: center; 
+}
+
+.photo{
+    width: auto;
+    height: 150px;
+}
+
+.info > #name{
+    font-family: 'Nanum Gothic', sans-serif;
+    color: #1d1d1f;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.info > #abc, #score{
+    font-family: 'Nanum Gothic', sans-serif;
+    color: #5f5f5f;
+    font-size: 10px;
+}
+
+.beer-btn input{
+    color: #2786d1;
+    background-color: white;
+    border: none;
+    float: right;
+    margin-top: 10px;
+}
