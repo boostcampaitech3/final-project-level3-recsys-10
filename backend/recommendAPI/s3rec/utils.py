@@ -167,6 +167,10 @@ def generate_submission_file(data_file, preds):
         "output/submission.csv", index=False
     )
 
+def __save_labels(self, encoder, name):
+    le_path = os.path.join(self.args.asset_dir, name + "_classes.npy")
+    np.save(le_path, encoder.classes_)
+
 
 def get_user_seqs(data_file):
     rating_df = pd.read_csv(data_file)
