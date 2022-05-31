@@ -64,6 +64,7 @@ def predict_from_select_beer(model: AutoRec , data : dict):
     topk_pred_list = re_transform(topk_pred_list_idx)
     return topk_pred_list , topk_rating_list
 
+
 def indexing_from_model(rating_pred : list, topk :int = 4):
     # topk 맥주 index
     ind = np.argpartition(rating_pred, -topk)[-topk:]
