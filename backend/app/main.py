@@ -18,6 +18,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles 
 
+from starlette.responses import RedirectResponse
+
 # DB 서버에 연결
 models.Base.metadata.create_all(bind=engine)
 
@@ -48,8 +50,7 @@ async def index(request: Request, response: Response, nickname: str = Form(...),
     isexist = crud.get_user_by_profile_name(db, profile_name = nickname)
     if isexist:
         # 이 부분 이미 지정된 이름입니다. 화면 노출시키고, 그리고 이전 페이지로 반환하는 버튼 
-        print(isexist)
-        return {"msg":"아이디가 중복됩니다. 새로고침 해주세요!"}
+        return templates.TemplateResponse("nickname_login.html", {"request": request, "error": True})
 
     # 새로운 유저 정보 등록
     new_user = schemas.UserCreate()
@@ -61,7 +62,7 @@ async def index(request: Request, response: Response, nickname: str = Form(...),
     # 쿠키에 유저 이름 등록
     response.set_cookie(key="profile_name", value=nickname)
 
-    return templates.TemplateResponse("index.html", {"request": request})
+    return RedirectResponse(url="/index", status_code=301)
 
 @app.get("/testlogin")
 def get_add(request: Request, response: Response):
