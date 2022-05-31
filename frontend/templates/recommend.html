@@ -13,13 +13,12 @@
 
 <body>
     {% include 'header.html' %}
-    <iframe id="iframe1" name="iframe1" style="display:none"></iframe>
     <div class="container">
         <div class="intro">
             <span>당신이 마셨던 맥주에 대해서 알려주세요.</span><br>
             <span>저희에게 많이 알려줄수록 당신에게 맞는 추천을 해드릴 수 있어요!</span>
         </div>
-        <form action="" method="post" enctype='application/json' id="test" target="iframe1">
+        <form action="result" method="post" enctype='application/json' id="prefer" target="_self">
             <div class="beer-select">
                 <div class="beer-info">
                     {% for beer in beers %}
@@ -55,12 +54,12 @@
 
 <script>
     $('#complete').click(function(){
-        test_data = $('#test').serializeArray();
-        console.log(test_data)
+        test_data = $('#prefer').serializeArray();
         $.ajax({
-            url: '/recommend',
+            url: '/result',
             type: 'POST',
             data: test_data,
+            dataType : "json",
             success: function(result){
                 console.log(test_data)
             }
