@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Form, Response
 from fastapi.param_functions import Depends
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
@@ -13,6 +13,10 @@ import backend.app.DB.crud as crud
 import backend.app.DB.schemas as schemas
 from backend.app.DB.database import SessionLocal, engine
 import backend.app.DB.models as models
+
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles 
 
 # DB 서버에 연결
 models.Base.metadata.create_all(bind=engine)
@@ -30,6 +34,39 @@ app = FastAPI()
 app.include_router(users.router)
 app.include_router(beers.router)
 app.include_router(reviewers.router)
+
+templates = Jinja2Templates(directory="frontend/templates")
+app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
+
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("nickname_login.html", {"request": request})
+
+@app.post("/", description="Insert profile_name")
+async def index(request: Request, response: Response, nickname: str = Form(...), db: Session = Depends(get_db)):
+    # 이미 존재하는 닉네임인지 확인하는 작업
+    isexist = crud.get_user_by_profile_name(db, profile_name = nickname)
+    if isexist:
+        # 이 부분 이미 지정된 이름입니다. 화면 노출시키고, 그리고 이전 페이지로 반환하는 버튼 
+        print(isexist)
+        return {"msg":"아이디가 중복됩니다. 새로고침 해주세요!"}
+
+    # 새로운 유저 정보 등록
+    new_user = schemas.UserCreate()
+    new_user.profile_name = nickname # user_id, gender, birth 아직은 관련 정보를 받지 않을 예정, 그러나 birth는 아이디 생성 시간으로 기록될 예정
+    new_user.gender = "X"
+    new_user.password = "BoostcampOnlineTest"
+    crud.create_user(db, user = new_user)
+
+    # 쿠키에 유저 이름 등록
+    response.set_cookie(key="profile_name", value=nickname)
+
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/testlogin")
+def get_add(request: Request, response: Response):
+    return request.cookies["profile_name"]
+
 
 class Product(BaseModel):
     id: str
