@@ -29,7 +29,7 @@ async def recommend(request: Request, db: Session = Depends(get_db)):
     beers = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).limit(30).all()
     return main.templates.TemplateResponse("recommend.html", {"request": request, "beers": beers})
 
-@router.post(path="/recommend")
+@router.post("/result")
 async def prefer(request: Request, 
                 db: Session = Depends(get_db),
                 model : AutoRec = Depends(get_model)):
@@ -49,7 +49,4 @@ async def prefer(request: Request,
     RecommendedBeer_3 = crud.get_beer(db, beer_id = int(topk_pred[2]))
     RecommendedBeer_4 = crud.get_beer(db, beer_id = int(topk_pred[3]))
 
-    # print(">>>>", RecommendedBeer_1.beer_id)
-    print([RecommendedBeer_1.beer_id, RecommendedBeer_2.beer_id, RecommendedBeer_3.beer_id, RecommendedBeer_4.beer_id])
-    return [RecommendedBeer_1, RecommendedBeer_2, RecommendedBeer_3, RecommendedBeer_4]
-   # return data_dict
+    return main.templates.TemplateResponse("result.html", {"request": request, "beers": [RecommendedBeer_1, RecommendedBeer_2, RecommendedBeer_3, RecommendedBeer_4]})
