@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request, Form, Response
+from starlette.responses import RedirectResponse
+from fastapi import FastAPI, Request, Form, Response, Cookie
 from fastapi.param_functions import Depends
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
@@ -58,14 +59,14 @@ async def index(request: Request, response: Response, nickname: str = Form(...),
     new_user.gender = "X"
     new_user.password = "BoostcampOnlineTest"
     crud.create_user(db, user = new_user)
-
+    
     # 쿠키에 유저 이름 등록
     response.set_cookie(key="profile_name", value=nickname)
 
     return RedirectResponse(url="/index", status_code=301)
 
 @app.get("/testlogin")
-def get_add(request: Request, response: Response):
+def get_add(request: Request, response: Response, cookies: Optional[dict]):
     return request.cookies["profile_name"]
 
 
