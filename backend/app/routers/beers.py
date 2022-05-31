@@ -9,8 +9,6 @@ from ..DB.database import SessionLocal, engine
 from ..DB import schemas, models,crud
 from ...recommendAPI.model import AutoRec, get_model , predict_from_select_beer
 
-import json
-
 router = APIRouter()
 
 # Dependency
