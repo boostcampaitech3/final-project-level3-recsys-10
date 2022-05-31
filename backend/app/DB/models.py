@@ -24,7 +24,6 @@ class Beer(Base):
     abv = Column(Float, nullable=True)
     style = Column(VARCHAR(50), nullable=False)
     image_url = Column(VARCHAR, nullable=True)
-    korean_name = Column(VARCHAR, nullable=True)
     review = relationship("Review", backref="beer")
 
 class Review(Base):
