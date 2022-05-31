@@ -8,8 +8,11 @@ from sqlalchemy.orm import Session
 from ..DB.database import SessionLocal, engine
 from ..DB import schemas, models,crud
 from ...recommendAPI.model import AutoRec, get_model , predict_from_select_beer
+<<<<<<< HEAD
 
 import json
+=======
+>>>>>>> e27fc51edb41910b75e64bce799b7e3ee3f771f8
 
 router = APIRouter()
 
