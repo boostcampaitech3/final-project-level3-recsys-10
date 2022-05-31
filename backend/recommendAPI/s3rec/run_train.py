@@ -82,7 +82,7 @@ def main():
     args.data_file = args.data_dir + "train_ratings.csv"
     item2attribute_file = args.data_dir + args.data_name + "_item2attributes.json"
 
-    user_seq, max_item, valid_rating_matrix, test_rating_matrix, _ = get_user_seqs(
+    user_seq, rating_seq, max_item, valid_rating_matrix, test_rating_matrix, _ = get_user_seqs(
         args.data_file
     )
 
@@ -105,19 +105,19 @@ def main():
     checkpoint = args_str + ".pt"
     args.checkpoint_path = os.path.join(args.output_dir, checkpoint)
 
-    train_dataset = SASRecDataset(args, user_seq, data_type="train")
+    train_dataset = SASRecDataset(args, user_seq, rating_seq, data_type="train")
     train_sampler = RandomSampler(train_dataset)
     train_dataloader = DataLoader(
         train_dataset, sampler=train_sampler, batch_size=args.batch_size
     )
 
-    eval_dataset = SASRecDataset(args, user_seq, data_type="valid")
+    eval_dataset = SASRecDataset(args, user_seq, rating_seq, data_type="valid")
     eval_sampler = SequentialSampler(eval_dataset)
     eval_dataloader = DataLoader(
         eval_dataset, sampler=eval_sampler, batch_size=args.batch_size
     )
 
-    test_dataset = SASRecDataset(args, user_seq, data_type="test")
+    test_dataset = SASRecDataset(args, user_seq, rating_seq, data_type="test")
     test_sampler = SequentialSampler(test_dataset)
     test_dataloader = DataLoader(
         test_dataset, sampler=test_sampler, batch_size=args.batch_size
@@ -147,7 +147,7 @@ def main():
 
         scores, _ = trainer.valid(epoch)
 
-        early_stopping(np.array(scores[-1:]), trainer.model)
+        early_stopping(-np.array(scores[-1:]), trainer.model)
         if early_stopping.early_stop:
             print("Early stopping")
             break

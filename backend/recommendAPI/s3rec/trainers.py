@@ -102,6 +102,19 @@ class Trainer:
 
         return loss
 
+    def rmse(self, seq_out, pos_ids, target_ratings):
+        # [batch seq_len hidden_size]
+        pos_emb = self.model.item_embeddings(pos_ids)
+        # [batch*seq_len hidden_size]
+        pos = pos_emb.view(-1, pos_emb.size(2))
+        seq_emb = seq_out.view(-1, self.args.hidden_size)  # [batch*seq_len hidden_size]
+        pos_logits = torch.sum(pos * seq_emb, -1)  # [batch*seq_len]
+        
+        mse = torch.nn.MSELoss()
+        loss = torch.sqrt(mse(pos_logits, target_ratings.view(-1)) + 1e-6)
+
+        return loss
+
     def predict_full(self, seq_out):
         # [item_num hidden_size]
         test_item_emb = self.model.item_embeddings.weight
@@ -240,10 +253,11 @@ class FinetuneTrainer(Trainer):
             for i, batch in rec_data_iter:
                 # 0. batch_data will be sent into the device(GPU or CPU)
                 batch = tuple(t.to(self.device) for t in batch)
-                _, input_ids, target_pos, target_neg, _ = batch
+                _, input_ids, target_pos, target_neg, target_ratings, _, _ = batch
                 # Binary cross_entropy
                 sequence_output = self.model.finetune(input_ids)
-                loss = self.cross_entropy(sequence_output, target_pos, target_neg)
+                # loss = self.cross_entropy(sequence_output, target_pos, target_neg)
+                loss = self.rmse(sequence_output, target_pos, target_ratings)
                 self.optim.zero_grad()
                 loss.backward()
                 self.optim.step()
@@ -268,37 +282,56 @@ class FinetuneTrainer(Trainer):
             for i, batch in rec_data_iter:
 
                 batch = tuple(t.to(self.device) for t in batch)
-                user_ids, input_ids, _, target_neg, answers = batch
+                user_ids, input_ids, _, target_neg, target_ratings, answers, ratings_answer = batch
                 recommend_output = self.model.finetune(input_ids)
 
                 recommend_output = recommend_output[:, -1, :]
+                # print(">>>>> recommend_output.size:", recommend_output.size())
+                # print(">>>>> answers.size:", answers.size())
+                
+                # recommend_output : 시퀀스의 마지막 시점에 소비한 맥주까지 포함하여 다른 맥주와의 상호작용을 확인하는 임베딩 벡터 # [batch hidden_size]
+                # answers : 해당 유저의 뒤에서 두 번째 아이템   # [batch * 1]
+                # ratings_answer : 해당 아이템을 해당 유저가 매길것으로 예상되는 점수 # [batch hidden_size]
 
-                rating_pred = self.predict_full(recommend_output)
+                answers_emb = self.model.item_embeddings(answers).squeeze(1) # [batch * hidden_size]
+                rating_pred = torch.sum(answers_emb * recommend_output, dim = 1)
 
-                rating_pred = rating_pred.cpu().data.numpy().copy()
-                batch_user_index = user_ids.cpu().numpy()
-                rating_pred[self.args.train_matrix[batch_user_index].toarray() > 0] = 0
+                metric_fn = torch.nn.MSELoss()
+                score = metric_fn(rating_pred, ratings_answer.squeeze(1))
 
-                ind = np.argpartition(rating_pred, -10)[:, -10:]
+                # print(">>>>>>>>>rmse :", score)
 
-                arr_ind = rating_pred[np.arange(len(rating_pred))[:, None], ind]
+                # rating_pred = self.predict_full(recommend_output)
 
-                arr_ind_argsort = np.argsort(arr_ind)[np.arange(len(rating_pred)), ::-1]
 
-                batch_pred_list = ind[
-                    np.arange(len(rating_pred))[:, None], arr_ind_argsort
-                ]
 
-                if i == 0:
-                    pred_list = batch_pred_list
-                    answer_list = answers.cpu().data.numpy()
-                else:
-                    pred_list = np.append(pred_list, batch_pred_list, axis=0)
-                    answer_list = np.append(
-                        answer_list, answers.cpu().data.numpy(), axis=0
-                    )
+                # rating_pred = rating_pred.cpu().data.numpy().copy()
+                # batch_user_index = user_ids.cpu().numpy()
+                # rating_pred[self.args.train_matrix[batch_user_index].toarray() > 0] = 0
+
+                # ind = np.argpartition(rating_pred, -10)[:, -10:]
+
+                # arr_ind = rating_pred[np.arange(len(rating_pred))[:, None], ind]
+
+                # arr_ind_argsort = np.argsort(arr_ind)[np.arange(len(rating_pred)), ::-1]
+
+                # batch_pred_list = ind[
+                #     np.arange(len(rating_pred))[:, None], arr_ind_argsort
+                # ]
+
+                # if i == 0:
+                #     pred_list = batch_pred_list
+                #     answer_list = answers.cpu().data.numpy()
+                # else:
+                #     pred_list = np.append(pred_list, batch_pred_list, axis=0)
+                #     answer_list = np.append(
+                #         answer_list, answers.cpu().data.numpy(), axis=0
+                #     )
 
             if mode == "submission":
                 return pred_list
             else:
-                return self.get_full_sort_score(epoch, answer_list, pred_list)
+                # return self.get_full_sort_score(epoch, answer_list, pred_list)
+                post_fix = {"Epoch": epoch, "rmse":score}
+                print(post_fix)
+                return [score], str(post_fix)

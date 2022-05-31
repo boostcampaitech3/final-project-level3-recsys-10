@@ -95,16 +95,16 @@ def avg_pooling(x, dim):
     return x.sum(dim=dim) / x.size(dim)
 
 
-def generate_rating_matrix_valid(user_seq, num_users, num_items):
+def generate_rating_matrix_valid(user_seq, rating_seq, num_users, num_items):
     # three lists are used to construct sparse matrix
     row = []
     col = []
     data = []
-    for user_id, item_list in enumerate(user_seq):
-        for item in item_list[:-2]:  #
+    for user_id, (item_list, rating_list) in enumerate(zip(user_seq, rating_seq)):
+        for item, rating in zip(item_list[:-2], rating_list[:-2]):  #
             row.append(user_id)
             col.append(item)
-            data.append(1)
+            data.append(rating)
 
     row = np.array(row)
     col = np.array(col)
@@ -114,16 +114,16 @@ def generate_rating_matrix_valid(user_seq, num_users, num_items):
     return rating_matrix
 
 
-def generate_rating_matrix_test(user_seq, num_users, num_items):
+def generate_rating_matrix_test(user_seq, rating_seq, num_users, num_items):
     # three lists are used to construct sparse matrix
     row = []
     col = []
     data = []
-    for user_id, item_list in enumerate(user_seq):
-        for item in item_list[:-1]:  #
+    for user_id, (item_list, rating_list) in enumerate(zip(user_seq, rating_seq)):
+        for item, rating in zip(item_list[:-1], rating_list[:-1]):  #
             row.append(user_id)
             col.append(item)
-            data.append(1)
+            data.append(rating)
 
     row = np.array(row)
     col = np.array(col)
@@ -133,16 +133,16 @@ def generate_rating_matrix_test(user_seq, num_users, num_items):
     return rating_matrix
 
 
-def generate_rating_matrix_submission(user_seq, num_users, num_items):
+def generate_rating_matrix_submission(user_seq, rating_seq, num_users, num_items):
     # three lists are used to construct sparse matrix
     row = []
     col = []
     data = []
-    for user_id, item_list in enumerate(user_seq):
-        for item in item_list[:]:  #
+    for user_id, (item_list, rating_list) in enumerate(zip(user_seq, rating_seq)):
+        for item, rating in zip(item_list[:], rating_list[:]):  #
             row.append(user_id)
             col.append(item)
-            data.append(1)
+            data.append(rating)
 
     row = np.array(row)
     col = np.array(col)
@@ -170,27 +170,44 @@ def generate_submission_file(data_file, preds):
 
 def get_user_seqs(data_file):
     rating_df = pd.read_csv(data_file)
-    lines = rating_df.groupby("user")["item"].apply(list)
-    user_seq = []
-    item_set = set()
-    for line in lines:
+    # lines = rating_df.groupby("user")["item"].apply(list)
+    lines_item = rating_df.groupby("user")["item"].apply(list)
+    lines_rating = rating_df.groupby("user")["rating"].apply(list)
 
-        items = line
+    # user_seq = []
+    # item_set = set()
+    user_seq = []
+    rating_seq = []
+    item_set = set()
+
+    # for line in lines:
+        # items = line
+        # user_seq.append(items)
+        # item_set = item_set | set(items)
+    for line_item, line_rating in zip(lines_item, lines_rating):
+        items = line_item
         user_seq.append(items)
+        ratings = line_rating
+        rating_seq.append(ratings)
         item_set = item_set | set(items)
     
+    # max_item = max(item_set)
+    # num_users = len(lines)
+    # num_items = max_item + 2
     max_item = max(item_set)
-
-    num_users = len(lines)
+    num_users = len(lines_item)
     num_items = max_item + 2
     
-    valid_rating_matrix = generate_rating_matrix_valid(user_seq, num_users, num_items)
-    test_rating_matrix = generate_rating_matrix_test(user_seq, num_users, num_items)
-    submission_rating_matrix = generate_rating_matrix_submission(
-        user_seq, num_users, num_items
+    # valid_rating_matrix = generate_rating_matrix_valid(user_seq, num_users, num_items)
+    # test_rating_matrix = generate_rating_matrix_test(user_seq, num_users, num_items)
+    valid_rating_matrix = generate_rating_matrix_valid(user_seq, rating_seq, num_users, num_items)
+    test_rating_matrix = generate_rating_matrix_test(user_seq, rating_seq, num_users, num_items)
+    submission_rating_matrix = generate_rating_matrix_submission( #### 이 함수도 안쓸것 같습니다.
+        user_seq, rating_seq, num_users, num_items 
     )
     return (
         user_seq,
+        rating_seq, ############ NEW ############
         max_item,
         valid_rating_matrix,
         test_rating_matrix,
@@ -200,18 +217,34 @@ def get_user_seqs(data_file):
 
 def get_user_seqs_long(data_file):
     rating_df = pd.read_csv(data_file)
-    lines = rating_df.groupby("user")["item"].apply(list)
+    # lines = rating_df.groupby("user")["item"].apply(list)
+    # user_seq = []
+    # long_sequence = []
+    # item_set = set()
+    # for line in lines:
+    #     items = line
+    #     long_sequence.extend(items)
+    #     user_seq.append(items)
+    #     item_set = item_set | set(items)
+    # max_item = max(item_set)
+    # return user_seq, max_item, long_sequence
+
+    lines_item = rating_df.groupby("user")["item"].apply(list)
+    lines_rating = rating_df.groupby("user")["rating"].apply(list)
     user_seq = []
-    long_sequence = []
+    rating_seq = []
+    long_sequence = [] 
     item_set = set()
-    for line in lines:
-        items = line
+    for line_item, line_rating in zip(lines_item, lines_rating):
+        items = line_item
+        ratings = line_rating
         long_sequence.extend(items)
         user_seq.append(items)
+        rating_seq.append(ratings)
         item_set = item_set | set(items)
     max_item = max(item_set)
-
-    return user_seq, max_item, long_sequence
+    return user_seq, rating_seq, max_item, long_sequence
+    
 
 
 def get_item2attribute_json(data_file):
