@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.param_functions import Depends
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
@@ -13,6 +13,10 @@ import backend.app.DB.crud as crud
 import backend.app.DB.schemas as schemas
 from backend.app.DB.database import SessionLocal, engine
 import backend.app.DB.models as models
+
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles 
 
 # DB 서버에 연결
 models.Base.metadata.create_all(bind=engine)
@@ -30,6 +34,9 @@ app = FastAPI()
 app.include_router(users.router)
 app.include_router(beers.router)
 app.include_router(reviewers.router)
+
+templates = Jinja2Templates(directory="frontend/templates")
+app.mount("/static", StaticFiles(directory="frontend/static"), name="static") 
 
 class Product(BaseModel):
     id: str
