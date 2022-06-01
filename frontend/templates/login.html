@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <link href="{{ url_for('static', path='css/login.css') }}" rel="stylesheet"> 
+</head>
+
+<body>
+    <div class="login-page">
+        <div class="intro">
+            <h1>도전맥주홀릭🍻</h1>
+            <p>당신에게 맥주를 추천해드립니다!</p>
+        </div>
+        <div class="form">
+            <form action="" class="login-form" method="post">
+                <input type="text" id="userID" name="userID" placeholder="아이디">
+                <input type="password" id="password" name="password" placeholder="비밀번호">
+                <input type="submit" value="로그인" id="login">
+            </form>
+            <a href="/register"><input type="submit" value="회원가입" id="register"></a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+
+h1{
+    color: #9CC1D9;
+    padding-top: 75px;
+    font-family: 'Nanum Gothic', sans-serif;
+    text-align: center;
+}
+
+.intro p{
+    font-family: 'Nanum Gothic', sans-serif;
+    font-size: 14;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.login-page {
+    width: 400px;
+    padding-top: auto;
+    margin: auto;
+}
+
+.form {
+    position: relative;
+    z-index: 1;
+    background: #FFFFFF;
+    max-width: 300px;
+    margin: 0 auto 100px;
+    padding: 45px;
+    text-align: center;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+.form input {
+    font-family: 'Nanum Gothic', sans-serif;
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+    border-radius: 30px;
+}
+
+.form #login{
+    font-family: 'Nanum Gothic', sans-serif;
+    text-transform: uppercase;
+    outline: 0;
+    background: #cbd6e5;
+    width: 100%;
+    border: 0;
+    padding: 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
+    border-radius: 30px;
+}
+
+.form #register{
+    background: #e6e9ee;
+}
