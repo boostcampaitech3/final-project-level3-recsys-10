@@ -56,3 +56,8 @@ async def prefer(request: Request,
     RecommendedBeer_4 = crud.get_beer(db, beer_id = int(topk_pred[3]))
     
     return main.templates.TemplateResponse("result.html", {"request": request, "beers": [RecommendedBeer_1, RecommendedBeer_2, RecommendedBeer_3, RecommendedBeer_4]})
+
+@router.get("/beer", response_class=HTMLResponse)
+async def beerList(request: Request, db: Session = Depends(get_db)):
+    beers = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).limit(30).all()
+    return main.templates.TemplateResponse("beerList.html", {"request": request, "beers": beers})
