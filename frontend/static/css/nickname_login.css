@@ -52,3 +52,9 @@
 #login {
     left: 50px;
 }
+
+#alert{
+    font-size: 10px;
+    color: #f77a7a;
+    text-align: center;
+}
