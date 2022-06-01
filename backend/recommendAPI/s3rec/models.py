@@ -196,31 +196,39 @@ class S3RecModel(nn.Module):
 
     # Fine tune
     # same as SASRec
-    def finetune(self, input_ids):
-
+    def finetune(self, input_ids, input_ratings):
+        
+        # Explicit 으로 변경해주기 위해서는, attetion 할 때, 아이템에, 
         attention_mask = (input_ids > 0).long()
-        extended_attention_mask = attention_mask.unsqueeze(1).unsqueeze(
-            2
-        )  # torch.int64
+        weighted_mask = input_ratings
+        extended_attention_mask = attention_mask.unsqueeze(1).unsqueeze(2)  # torch.int64
+        extended_weighted_mask = weighted_mask.unsqueeze(1).unsqueeze(2)
+
         max_len = attention_mask.size(-1)
         attn_shape = (1, max_len, max_len)
-        subsequent_mask = torch.triu(torch.ones(attn_shape), diagonal=1)  # torch.uint8
+        # subsequent_mask = torch.triu(torch.ones(attn_shape), diagonal=1)  # torch.uint8
+        subsequent_mask = torch.tril(torch.ones(attn_shape), diagonal=1)  # torch.uint8
         subsequent_mask = (subsequent_mask == 0).unsqueeze(1)
         subsequent_mask = subsequent_mask.long()
 
         if self.args.cuda_condition:
             subsequent_mask = subsequent_mask.cuda()
 
-        extended_attention_mask = extended_attention_mask * subsequent_mask
+        extended_attention_mask = extended_attention_mask * subsequent_mask        
         extended_attention_mask = extended_attention_mask.to(
             dtype=next(self.parameters()).dtype
         )  # fp16 compatibility
         extended_attention_mask = (1.0 - extended_attention_mask) * -10000.0
 
+        weighted_mask_by_score = extended_weighted_mask * subsequent_mask
+        weighted_mask_by_score = weighted_mask_by_score.to(
+            dtype=next(self.parameters()).dtype
+        )  # fp16 compatibility
+
         sequence_emb = self.add_position_embedding(input_ids)
 
         item_encoded_layers = self.item_encoder(
-            sequence_emb, extended_attention_mask, output_all_encoded_layers=True
+            sequence_emb, (extended_attention_mask, weighted_mask_by_score), output_all_encoded_layers=True
         )
 
         sequence_output = item_encoded_layers[-1]

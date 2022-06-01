@@ -220,6 +220,7 @@ class SASRecDataset(Dataset):
             cur_tensors = (
                 torch.tensor(user_id, dtype=torch.long),  # user_id for testing
                 torch.tensor(input_ids, dtype=torch.long),
+                torch.tensor(input_ratings, dtype=torch.float32), ######## new ##########
                 torch.tensor(target_pos, dtype=torch.long),
                 torch.tensor([0], dtype=torch.long), # torch.tensor(target_neg, dtype=torch.long),
                 torch.tensor(target_ratings, dtype=torch.float32), ######## new ##########
@@ -231,6 +232,7 @@ class SASRecDataset(Dataset):
             cur_tensors = (
                 torch.tensor(user_id, dtype=torch.long),  # user_id for testing
                 torch.tensor(input_ids, dtype=torch.long),
+                torch.tensor(input_ratings, dtype=torch.float32), ######## new ##########
                 torch.tensor(target_pos, dtype=torch.long),
                 torch.tensor([0], dtype=torch.long), # torch.tensor(target_neg, dtype=torch.long),
                 torch.tensor(target_ratings, dtype=torch.float32), ######## new ##########

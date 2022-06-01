@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import torch
 from scipy.sparse import csr_matrix
+from sklearn.preprocessing import LabelEncoder
 
 
 def set_seed(seed):
@@ -167,13 +168,29 @@ def generate_submission_file(data_file, preds):
         "output/submission.csv", index=False
     )
 
-def __save_labels(self, encoder, name):
-    le_path = os.path.join(self.args.asset_dir, name + "_classes.npy")
+def __save_labels(output_dir, encoder, name):
+    le_path = os.path.join(output_dir, name + "_classes.npy")
     np.save(le_path, encoder.classes_)
 
+# def __preprocessing()
 
-def get_user_seqs(data_file):
-    rating_df = pd.read_csv(data_file)
+
+def get_user_seqs(args, is_train = True):
+    # TODO get the data from DataBase # rating_df = db.query ...
+    rating_df = pd.read_csv(args.data_file)
+    
+    # labele encoding
+    le = LabelEncoder()
+    if is_train:
+        raw_item_list = rating_df["item"].unique().tolist() + [-99999] # "unknown" -> -99999
+        le.fit(raw_item_list)
+        __save_labels(args.output_dir, le, "item")
+    else:
+        label_path = os.path.join(args.output_dir, "item" + "_classes.npy")
+        le.classes_ = np.load(label_path)
+    
+    rating_df["item"] = le.transform(rating_df["item"])
+
     # lines = rating_df.groupby("user")["item"].apply(list)
     lines_item = rating_df.groupby("user")["item"].apply(list)
     lines_rating = rating_df.groupby("user")["rating"].apply(list)

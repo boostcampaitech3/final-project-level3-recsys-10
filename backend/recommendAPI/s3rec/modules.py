@@ -116,7 +116,8 @@ class SelfAttention(nn.Module):
         # Apply the attention mask is (precomputed for all layers in BertModel forward() function)
         # [batch_size heads seq_len seq_len] scores
         # [batch_size 1 1 seq_len]
-        attention_scores = attention_scores + attention_mask
+        extended_attention_mask, weighted_mask = attention_mask
+        attention_scores = attention_scores * weighted_mask + extended_attention_mask
 
         # Normalize the attention scores to probabilities.
         attention_probs = nn.Softmax(dim=-1)(attention_scores)

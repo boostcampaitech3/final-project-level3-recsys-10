@@ -253,9 +253,10 @@ class FinetuneTrainer(Trainer):
             for i, batch in rec_data_iter:
                 # 0. batch_data will be sent into the device(GPU or CPU)
                 batch = tuple(t.to(self.device) for t in batch)
-                _, input_ids, target_pos, target_neg, target_ratings, _, _ = batch
+                _, input_ids, input_ratings, target_pos, target_neg, target_ratings, _, _ = batch
+
                 # Binary cross_entropy
-                sequence_output = self.model.finetune(input_ids)
+                sequence_output = self.model.finetune(input_ids, input_ratings) ############## TODO
                 # loss = self.cross_entropy(sequence_output, target_pos, target_neg)
                 loss = self.rmse(sequence_output, target_pos, target_ratings)
                 self.optim.zero_grad()
@@ -282,8 +283,8 @@ class FinetuneTrainer(Trainer):
             for i, batch in rec_data_iter:
 
                 batch = tuple(t.to(self.device) for t in batch)
-                user_ids, input_ids, _, target_neg, target_ratings, answers, ratings_answer = batch
-                recommend_output = self.model.finetune(input_ids)
+                user_ids, input_ids, input_ratings, _, target_neg, target_ratings, answers, ratings_answer = batch
+                recommend_output = self.model.finetune(input_ids,  input_ratings) ############## TODO
 
                 recommend_output = recommend_output[:, -1, :]
                 # print(">>>>> recommend_output.size:", recommend_output.size())
