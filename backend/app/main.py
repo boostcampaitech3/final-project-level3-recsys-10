@@ -6,7 +6,6 @@ from typing import List, Optional, Dict
 
 from datetime import datetime
 from ..recommendAPI.model import AutoRec, get_model , predict_from_select_beer
-from .routers import users, beers, reviewers
 
 from sqlalchemy.orm import Session
 import backend.app.DB.crud as crud
@@ -37,19 +36,12 @@ def get_db():
 
 app = FastAPI()
 
-app.include_router(users.router)
-app.include_router(beers.router)
-app.include_router(reviewers.router)
-
 cookie_sec = APIKeyCookie(name="session")
 
 with open('backend/app/config.yaml') as f:
     setting = yaml.safe_load(f)
     secret_key = setting['secret_key']
 secret_key = secret_key
-
-templates = Jinja2Templates(directory="frontend/templates")
-app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 
 def get_current_user(session: str = Depends(cookie_sec)):
     try:
@@ -60,6 +52,15 @@ def get_current_user(session: str = Depends(cookie_sec)):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authentication"
         )
+
+from .routers import users, beers, reviewers
+
+app.include_router(users.router)
+app.include_router(beers.router)
+app.include_router(reviewers.router)
+
+templates = Jinja2Templates(directory="frontend/templates")
+app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def login(request: Request):
@@ -85,9 +86,6 @@ async def login_check(request: Request, response: Response, nickname: str = Form
 
     return response
 
-@app.get("/test")
-def read_private(username: str = Depends(get_current_user)):
-    return {"username": username, "private": "get some private data"}
 
 class Product(BaseModel):
     id: str
