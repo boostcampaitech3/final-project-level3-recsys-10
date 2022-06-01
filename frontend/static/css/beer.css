@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+
+.container {
+    display: grid;
+    grid-template-rows: repeat(5, auto);
+    margin-top: 50px;
+    font-family: 'Nanum Gothic', sans-serif;
+
+}
+
+.beer-info {
+    display: grid;
+    grid-template-columns: 200px auto;
+    column-gap: 20px;
+    place-items: center start;
+}
+
+.photo {
+    place-items: center;
+    width: 200px;
+    height: 200px;
+}
+
+.contour {
+    background-color: #d2d2d7;
+    margin: 40px 0 40px 0;
+}
+
+.score {
+    display: grid;
+    grid-template-columns: 200px 160px 160px 160px;
+}
+
+#comment {
+    width: 100%;
+    height: 70px;
+    resize: none;
+}
+
+#comment-btn {
+    width: 80px;
+    float: right;
+}
+
+.user-score {
+    display: grid;
+    grid-template-columns: 50px 160px 160px 160px 300px;
+}
+
+/* 별점 기능 */
+/* 출처 : https://gurtn.tistory.com/80 */
+#appearance-star,
+#aroma-star,
+#palate-star,
+#taste-star,
+.appearance-star,
+.aroma-star,
+.palate-star,
+.taste-star {
+    position: relative;
+    font-size: 1.2rem;
+    color: #ddd;
+}
+
+#appearance-star input,
+#aroma-star input,
+#palate-star input,
+#taste-star input,
+.appearance-star input,
+.aroma-star input,
+.palate-star input,
+.taste-star input {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+#appearance-star span,
+#aroma-star span,
+#palate-star span,
+#taste-star span{
+    width: 0;
+    position: absolute;
+    left: 0;
+    color: rgb(253, 202, 113);
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.appearance-star span,
+.aroma-star span,
+.palate-star span,
+.taste-star span {
+    position: absolute;
+    left: 0;
+    color: rgb(253, 202, 113);
+    overflow: hidden;
+    pointer-events: none;
+}
