@@ -82,19 +82,17 @@ def indexing_from_model(rating_pred : list, topk :int = 4):
     return topk_pred_list.tolist() , topk_rating_list.tolist()
 
 
+def steam_Rating(df, topk):
+    df['steam'] = df['reviewScore'] - ((df['reviewScore']  - 3.0) * (2 ** (-1 * np.log10(df['count']))))
+    topk_pred = df.sort_values(by=['steam'],ascending=False).iloc[:topk]['beerID'].values.tolist()
+    return topk_pred
+
 def popular_topk(data, topk, method = 'steam'):
-    # 추천 맥주 개수
     topk = 4
-    data = pd.DataFrame(data, columns=[])
-
+    data = pd.DataFrame(data, columns=['beerID','count','reviewScore'])
     if method == 'steam':
-        pass
+        return steam_Rating(data, topk)
     elif method == 'count':
-        pass
+        return data.sort_values(by=['count'],ascending=False).iloc[:topk]['beerID'].values.tolist()
     elif method == 'score':
-        pass
-
-    # 모델 예측 맥주 평점
-
-    return topk_pred_list , topk_rating_list
-
+        return data.sort_values(by=['reviewScore'],ascending=False).iloc[:topk]['beerID'].values.tolist()

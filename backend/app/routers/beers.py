@@ -46,10 +46,9 @@ async def prefer(request: Request,
     except:
         # TODO : 인기도 기반 추천
         data = crud.get_popular_review(db)
-        topk_pred = popular_topk(data, method='news')
-        pass
-        
-    
+        topk_pred = popular_topk(data, topk=4, method='count')
+        print("----------------------pop-----------------------------")
+        print(topk_pred)
     
     RecommendedBeer_1 = crud.get_beer(db, beer_id = int(topk_pred[0])) # Beer
     RecommendedBeer_2 = crud.get_beer(db, beer_id = int(topk_pred[1]))
