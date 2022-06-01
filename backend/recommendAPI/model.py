@@ -80,3 +80,21 @@ def indexing_from_model(rating_pred : list, topk :int = 4):
     # rating 내림차순 모델 예측 맥주 평점 중 topk개
     topk_rating_list = rating_pred[topk_pred_list]
     return topk_pred_list.tolist() , topk_rating_list.tolist()
+
+
+def popular_topk(data, topk, method = 'steam'):
+    # 추천 맥주 개수
+    topk = 4
+    data = pd.DataFrame(data, columns=[])
+
+    if method == 'steam':
+        pass
+    elif method == 'count':
+        pass
+    elif method == 'score':
+        pass
+
+    # 모델 예측 맥주 평점
+
+    return topk_pred_list , topk_rating_list
+
