@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    
+    <link href="{{ url_for('static', path='css/register.css') }}" rel="stylesheet"> 
+    <link href="{{ url_for('static', path='js/register.css') }}" rel="stylesheet"> 
+</head>
+
+<body>
+    <div class="register-page">
+        <h1>회원가입</h1>
+        <form action="" class="register-form" method="post" onsubmit="return checkSignupForm();">
+            <input type="text" id="userID" name="userID" placeholder="아이디를 입력해주세요">
+            <input id="userIDChk" type="button" name="userIdValidation" value="중복확인">
+            <input type="password" id="password" name="password" onchange="fn_pw_lenCheck()"
+                placeholder="비밀번호를 입력해주세요">
+            <p class="pwMessage" style="text-align: left;">비밀번호는 최소 8자 이상, 최대 20자 이하로 구성해주세요.</p>
+            <input type="password" id="passwordChk" name="passwordChk" onchange="fn_pw_check()"
+                placeholder="다시 한 번 더 입력해주세요">
+            <select name="gender">
+                <option id="gender" selected="selected" value=null>성별을 선택해주세요</option>
+                <option value=1>남</option>
+                <option value=2>여</option>
+            </select>
+            <p class="pwMessage" style="text-align: left;">생년월일을 입력해주세요</p>
+            <input type="date" id="brith" name="brith">
+            <input type="button" id="cancle" onClick="location.href='/signin'" value="취소">
+            <input type="submit" id="complete" id_check_result="fail" name="save" value="완료">
+        </form>
+    </div>
+</body>
+
+</html>
