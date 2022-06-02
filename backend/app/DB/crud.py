@@ -99,7 +99,8 @@ def get_coldstart_beer(db: Session):
             ids.extend(numpy.random.choice(tmp['beerId'].values, 2,replace=False))
         else:
             ids.extend(numpy.random.choice(tmp['beerId'].values, 4,replace=False))
-    random.shuffle(ids)  
+    
     ids = [int(i) for i in ids]
-
-    return db.query(models.Beer).filter(models.Beer.beer_id.in_(ids)).all()
+    items = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).filter(models.Beer.beer_id.in_(ids)).all()
+    random.shuffle(items)  
+    return items
