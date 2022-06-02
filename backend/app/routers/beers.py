@@ -6,8 +6,8 @@ from .. import main
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from ..DB.database import SessionLocal, engine
-from ..DB import schemas, models,crud
+from ..DB.database import SessionLocal
+from ..DB import models,crud
 from ...recommendAPI.model import AutoRec, get_model , predict_from_select_beer, popular_topk
 
 from jose import jwt
