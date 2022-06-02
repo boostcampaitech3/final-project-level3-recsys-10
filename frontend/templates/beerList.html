@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맥주 취향 선택</title>
+    <link href="{{ url_for('static', path='css/footer.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='css/beerList.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='css/boxed-check.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='css/boxed-check.min.css') }}" rel="stylesheet">
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <div class="container">
+        <div class="intro">
+            <span>맥주리뷰. 가장 솔직한 한줄평</span>
+        </div>
+        <div class="beer-info">
+            {% for beer in beers %}
+            <div class="beer">
+                <a href="/beer/{{ beer[0] }}"><img class="photo" src={{ beer[2] }}></a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% include 'footer.html' %}
+
+</body>
+</html>

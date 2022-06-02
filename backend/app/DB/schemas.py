@@ -59,9 +59,9 @@ class BeerReview(BaseModel):
     """
     # user_id : int
     beer_id : int
-    reviewscore : float
+    review_score : float
     # reviewtext : str
-    reviewtime : datetime = Field(default_factory=datetime.now)
+    review_time : datetime = Field(default_factory=datetime.now)
     # appearance : float
     # aroma : float
     # palate: float
