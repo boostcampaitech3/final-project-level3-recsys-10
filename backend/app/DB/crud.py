@@ -15,6 +15,10 @@ def get_user_by_profile_name(db: Session, profile_name: str):
 def get_beer(db: Session, beer_id: int):
     return db.query(models.Beer).filter(models.Beer.beer_id == beer_id).first()
 
+
+def get_beer_id(db: Session):
+    return db.query(models.Beer.beer_id).all()
+
 def get_popular_review(db: Session):
     s = """
     select beer_id, count(beer_id), avg(reviewScore)

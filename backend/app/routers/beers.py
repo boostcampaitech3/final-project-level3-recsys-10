@@ -1,3 +1,4 @@
+from backend.recommendAPI.s3rec.inference_api import inference
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 
@@ -8,7 +9,7 @@ from sqlalchemy.orm import Session
 from ..DB.database import SessionLocal, engine
 from ..DB import schemas, models,crud
 from ...recommendAPI.model import AutoRec, get_model , predict_from_select_beer, popular_topk
-
+from ...recommendAPI.s3rec.inference_api import inference
 router = APIRouter()
 
 # Dependency
@@ -29,6 +30,7 @@ async def recommend(request: Request, db: Session = Depends(get_db)):
     beers = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).limit(30).all()
     return main.templates.TemplateResponse("recommend.html", {"request": request, "beers": beers})
 
+AutoRec
 @router.post("/result")
 async def prefer(request: Request, 
                 db: Session = Depends(get_db),
@@ -42,9 +44,16 @@ async def prefer(request: Request,
         for i in data_b:
             beer_id, rate = i.split('=')
             data_dict[int(beer_id)] = int(rate)
-            topk_pred, topk_rating = predict_from_select_beer(model, data_dict)
+
+        # AutoRec
+        # topk_pred, topk_rating = predict_from_select_beer(model, data_dict)
+        
+        # S3Rec
+        beer_ids = crud.get_beer_id(db)
+        topk_pred = inference(data_dict, beer_ids)
+
     except:
-        # TODO : 인기도 기반 추천
+        # 인기도 기반 추천
         data = crud.get_popular_review(db)
         topk_pred = popular_topk(data, topk=4, method='count')
         print("----------------------pop-----------------------------")
@@ -56,3 +65,4 @@ async def prefer(request: Request,
     RecommendedBeer_4 = crud.get_beer(db, beer_id = int(topk_pred[3]))
     
     return main.templates.TemplateResponse("result.html", {"request": request, "beers": [RecommendedBeer_1, RecommendedBeer_2, RecommendedBeer_3, RecommendedBeer_4]})
+
