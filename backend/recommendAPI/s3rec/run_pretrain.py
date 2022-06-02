@@ -94,7 +94,8 @@ def main():
     args.data_file = args.data_dir + "train_ratings.csv"
     item2attribute_file = args.data_dir + args.data_name + "_item2attributes.json"
     # concat all user_seq get a long sequence, from which sample neg segment for SP
-    user_seq, max_item, long_sequence = get_user_seqs_long(args.data_file)
+    # user_seq, max_item, long_sequence = get_user_seqs_long(args.data_file)
+    user_seq, rating_seq, max_item, long_sequence = get_user_seqs_long(args.data_file)
 
     item2attribute, attribute_size = get_item2attribute_json(item2attribute_file)
 
@@ -111,7 +112,7 @@ def main():
 
     for epoch in range(args.pre_epochs):
 
-        pretrain_dataset = PretrainDataset(args, user_seq, long_sequence)
+        pretrain_dataset = PretrainDataset(args, user_seq, rating_seq, long_sequence)
         pretrain_sampler = RandomSampler(pretrain_dataset)
         pretrain_dataloader = DataLoader(
             pretrain_dataset, sampler=pretrain_sampler, batch_size=args.pre_batch_size

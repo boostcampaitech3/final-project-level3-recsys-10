@@ -7,9 +7,10 @@ from utils import neg_sample
 
 
 class PretrainDataset(Dataset):
-    def __init__(self, args, user_seq, long_sequence):
+    def __init__(self, args, user_seq, rating_seq, long_sequence):
         self.args = args
         self.user_seq = user_seq
+        self.rating_seq = rating_seq
         self.long_sequence = long_sequence
         self.max_len = args.max_seq_length
         self.part_sequence = []

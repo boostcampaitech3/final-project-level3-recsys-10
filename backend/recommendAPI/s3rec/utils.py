@@ -236,8 +236,19 @@ def get_user_seqs(args, is_train = True):
     )
 
 
-def get_user_seqs_long(data_file):
-    rating_df = pd.read_csv(data_file)
+def get_user_seqs_long(args, is_train = True):
+    rating_df = pd.read_csv(args.data_file)
+
+    # labele encoding
+    le = LabelEncoder()
+    if is_train:
+        raw_item_list = rating_df["item"].unique().tolist() + [-99999] # "unknown" -> -99999
+        le.fit(raw_item_list)
+        __save_labels(args.output_dir, le, "item")
+    else:
+        label_path = os.path.join(args.output_dir, "item" + "_classes.npy")
+        le.classes_ = np.load(label_path)
+
     # lines = rating_df.groupby("user")["item"].apply(list)
     # user_seq = []
     # long_sequence = []
