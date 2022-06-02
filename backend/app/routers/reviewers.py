@@ -26,6 +26,14 @@ async def beer(request: Request, beer_id: int, db: Session = Depends(get_db)):
     beerInfo = [beer.beer_name, beer.abv, beer.image_url]
 
     reviews = db.query(models.Review).filter(models.Review.beer_id == beer_id).all()
+
+    # TODO
+    '''
+    description : reviews 객체에 있는 user_id를 통해 reviewer 테이블의 profile_name 받아오기(by. join)
+    input : reviews 객체
+    output : reviewer.profile_name
+    '''
+
     return main.templates.TemplateResponse("beer.html", {"request": request, "beerInfo": beerInfo, "reviews": reviews})
 
 @router.post("/beer/{beer_id}", response_class=HTMLResponse)
