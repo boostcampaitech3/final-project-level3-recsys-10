@@ -62,3 +62,19 @@ async def beerEvaluation(beer_id: int, appearance: int = Form(...), aroma: int =
     db.commit()
     db.refresh(db_review)
     return RedirectResponse(url="/beer/"+str(beer_id), status_code=301)
+
+@router.get("/guide", response_class=HTMLResponse)
+async def guide(request: Request):
+    return main.templates.TemplateResponse("guide.html", {"request": request})
+
+@router.post("/guide", response_class=HTMLResponse)
+async def feedback(request: Request, user: list = Depends(main.get_current_user), db: Session = Depends(main.get_db)):
+    feedback_data = await request.body()
+    feedback_data = str(feedback_data, 'utf-8')
+    feedback_data = feedback_data.split('&')
+
+    user_id = crud.get_user_id_by_profile_name(db, profile_name=user[0])
+    
+    crud.update_feedback_by_id(db, user_id=user_id, feedback_id=user[1], data_list=feedback_data)
+    
+    return RedirectResponse(url="/guide", status_code=301)

@@ -2,7 +2,7 @@
 
 .container{
     display: grid;
-    grid-template-rows: 120px 400px auto;
+    grid-template-rows: 120px 400px auto auto;
     place-items: center; 
 }
 
@@ -17,13 +17,13 @@
 
 .beer-info{
     display: grid;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: repeat(4, 200px);
     column-gap: 4px;
 }
 
 .beer{
     display: grid;
-    grid-template-rows: 200px 100px;
+    grid-template-rows: 200px 100px auto;
     place-items: center;
 }
 
@@ -32,19 +32,26 @@
     height: 200px;
 }
 
-#good{
-    font-size: 25px;
-    background-color: #bed59a;
-    padding: 5px 12px 5px 12px;
-    border-radius: 5px;
-    margin-right: 10px;
-    border: none;
+.info{
+    text-align: center;
 }
 
-#bad{
-    font-size: 25px;
-    background-color: #f26e56;
-    padding: 5px 12px 5px 12px;
-    border-radius: 5px;
-    border: none;
+.like-check{
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 10px;
+}
+
+.feedback .like-check{
+    width: 100px;
+    margin: 0 auto;
+}
+
+.beer-recommend-result p{
+    text-align: center;
+}
+
+#complete{
+    width: 100px;
+    margin: 0 auto;
 }
