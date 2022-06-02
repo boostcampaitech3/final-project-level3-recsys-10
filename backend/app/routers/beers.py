@@ -57,13 +57,13 @@ async def prefer(request: Request,
     RecommendedBeer_3 = crud.get_beer(db, beer_id = int(topk_pred[2]))
     RecommendedBeer_4 = crud.get_beer(db, beer_id = int(topk_pred[3]))
     
-    # result 결과 => DB 저장
-    try:
-        max_id_before = db.query(func.max(models.Feedback.feedback_id)).scalar()
-    except:
-        max_id_before = 0
-
     user_id = crud.get_user_id_by_profile_name(db, profile_name=nickname)
+
+    # result 결과 => DB 저장
+    max_id_before = db.query(func.max(models.Feedback.feedback_id)).filter(models.Feedback.user_id == user_id).scalar()
+    
+    if max_id_before == None:
+        max_id_before = 0
 
     db_feedback = models.Feedback(
                 feedback_id=int(max_id_before + 1),
