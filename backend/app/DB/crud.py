@@ -19,6 +19,15 @@ def get_user_by_profile_name(db: Session, profile_name: str):
 def get_beer(db: Session, beer_id: int):
     return db.query(models.Beer).filter(models.Beer.beer_id == beer_id).first()
 
+def get_popular_review(db: Session):
+    s = """
+    select beer_id, count(beer_id), avg(reviewScore)
+    from review
+    group by beer_id
+    order by avg(reviewScore) desc
+    """
+    return db.execute(s).all()
+
 def create_user(db: Session, user: schemas.UserCreate):
     fake_hashed_password = user.password + "notreallyhashed"    
     max_id_before = db.query(func.max(models.User.user_id)).scalar()

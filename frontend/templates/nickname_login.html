@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <link href="{{ url_for('static', path='css/nickname_login.css') }}" rel="stylesheet"> 
+    </head>
+    <body>
+        <div class="wrap">
+            <div class="form-wrap">
+                {% if error == True %}
+                    <p id="alert">이미 지정된 닉네임입니다. 다른 닉네임을 입력해주세요!</p>
+                {% endif %}
+                <form id="login" action="" class="input-group" method="post">
+                    <input type="text" class="input-field" placeholder="Nickname" name="nickname" required>
+                    <input type="submit" id="submit" value="Login">
+                </form>
+            </div>
+        </div>
+        </script>
+    </body>
+</html>
