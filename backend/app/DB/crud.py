@@ -23,6 +23,9 @@ def get_user_id_by_profile_name(db: Session, profile_name: str):
 def get_beer(db: Session, beer_id: int):
     return db.query(models.Beer).filter(models.Beer.beer_id == beer_id).first()
 
+def get_beer_id(db: Session):
+    return db.query(models.Beer.beer_id).all()
+
 def update_feedback_by_id(db: Session, user_id: int, feedback_id: int, data_list: list):
     # db_feedback = db.query(models.Feedback).filter(models.Feedback.user_id == user_id).filter(models.Feedback.feedback_id == feedback_id)
     db_feedback = db.query(models.Feedback).filter(and_(models.Feedback.user_id == user_id, models.Feedback.feedback_id == feedback_id)).first()
@@ -52,6 +55,7 @@ def update_feedback_by_id(db: Session, user_id: int, feedback_id: int, data_list
         pass
 
     return db_feedback
+
 
 def get_popular_review(db: Session):
     s = """

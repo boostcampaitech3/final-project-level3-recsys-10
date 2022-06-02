@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from modules import Encoder, LayerNorm
+from .modules import Encoder, LayerNorm
 
 
 class S3RecModel(nn.Module):
