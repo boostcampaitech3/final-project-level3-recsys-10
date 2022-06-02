@@ -5,8 +5,8 @@ from .. import main
 
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from ..DB.database import SessionLocal, engine
-from ..DB import schemas, models,crud
+from ..DB.database import SessionLocal
+from ..DB import models, crud
 from ...recommendAPI.model import AutoRec, get_model , predict_from_select_beer, popular_topk
 
 router = APIRouter()
@@ -26,7 +26,7 @@ async def index(request: Request, db: Session = Depends(get_db)):
 
 @router.get("/recommend", response_class=HTMLResponse)
 async def recommend(request: Request, db: Session = Depends(get_db)):
-    beers = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).limit(30).all()
+    beers= crud.get_coldstart_beer(db)
     return main.templates.TemplateResponse("recommend.html", {"request": request, "beers": beers})
 
 @router.post("/result")
