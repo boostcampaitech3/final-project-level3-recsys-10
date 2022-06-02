@@ -26,7 +26,7 @@ def get_popular_review(db: Session):
 
 def get_beer_review(db:Session, beer_id: int) -> List:
     s= f"""
-    select u.profile_name, r.reviewscore, r.appearance, r.aroma, r.palate, r.taste, r.reviewtext
+    select u.profile_name, r.review_score, r.appearance, r.aroma, r.palate, r.taste, r.review_text
     from review as r
     join reviewer as u
     on r.user_id = u.user_id
