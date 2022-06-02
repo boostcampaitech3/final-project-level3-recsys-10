@@ -24,15 +24,19 @@ def get_db():
 async def beer(request: Request, beer_id: int, db: Session = Depends(get_db)):
     beer = crud.get_beer(db, beer_id=beer_id)
     beerInfo = [beer.beer_name, beer.abv, beer.image_url]
-
-    reviews = db.query(models.Review).filter(models.Review.beer_id == beer_id).all()
-
     # TODO
     '''
     description : reviews 객체에 있는 user_id를 통해 reviewer 테이블의 profile_name 받아오기(by. join)
     input : reviews 객체
     output : reviewer.profile_name
+
+    -> 원래는 DB 객체를 받아오는 형태(profilename미포함)에서
+       DB에서 필요한 데이터(profilename포함)를 리스트로 받아오는 형태로 작성.
+       [profile_name, reviewscore, appearance, aroma, palate, taste, reviewtext] 순
     '''
+    # reviews = db.query(models.Review).filter(models.Review.beer_id == beer_id).all()
+    reviews = crud.get_beer_review(db, beer_id)
+  
 
     return main.templates.TemplateResponse("beer.html", {"request": request, "beerInfo": beerInfo, "reviews": reviews})
 
