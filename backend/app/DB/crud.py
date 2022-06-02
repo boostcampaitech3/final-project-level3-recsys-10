@@ -12,15 +12,18 @@ def get_user_by_id(db: Session, user_id: int):
 def get_user_by_profile_name(db: Session, profile_name: str):
     return db.query(models.User).filter(models.User.profile_name == profile_name).first()
 
+def get_user_id_by_profile_name(db: Session, profile_name: str):
+    return db.query(models.User.user_id).filter(models.User.profile_name == profile_name).scalar()
+
 def get_beer(db: Session, beer_id: int):
     return db.query(models.Beer).filter(models.Beer.beer_id == beer_id).first()
 
 def get_popular_review(db: Session):
     s = """
-    select beer_id, count(beer_id), avg(reviewScore)
+    select beer_id, count(beer_id), avg(review_score)
     from review
     group by beer_id
-    order by avg(reviewScore) desc
+    order by avg(review_score) desc
     """
     return db.execute(s).all()
 
