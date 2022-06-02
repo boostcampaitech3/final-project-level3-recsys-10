@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form, Cookie, Security 
+from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.param_functions import Depends
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
@@ -6,7 +6,6 @@ from typing import List, Optional, Dict
 
 from datetime import datetime
 from ..recommendAPI.model import AutoRec, get_model , predict_from_select_beer
-from .routers import users, beers, reviewers
 
 from sqlalchemy.orm import Session
 import backend.app.DB.crud as crud
@@ -18,6 +17,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles 
 
 from starlette.responses import Response, HTMLResponse, RedirectResponse
+from starlette import status
 
 from fastapi.security import APIKeyCookie
 from jose import jwt
@@ -37,10 +37,6 @@ def get_db():
 
 app = FastAPI()
 
-app.include_router(users.router)
-app.include_router(beers.router)
-app.include_router(reviewers.router)
-
 cookie_sec = APIKeyCookie(name="session")
 
 with open('backend/app/config.yaml') as f:
@@ -54,12 +50,18 @@ app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 def get_current_user(session: str = Depends(cookie_sec)):
     try:
         payload = jwt.decode(session, secret_key)
-        user = payload["sub"]
-        return user
+        user = payload['nickname']
+        feedback_id = payload['feedback_id']
+        return [user, feedback_id]
     except Exception:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authentication"
         )
+
+from .routers import users, beers, reviewers
+app.include_router(users.router)
+app.include_router(beers.router)
+app.include_router(reviewers.router)
 
 @app.get("/", response_class=HTMLResponse)
 async def login(request: Request):
@@ -77,17 +79,14 @@ async def login_check(request: Request, response: Response, nickname: str = Form
     new_user.profile_name = nickname # user_id, gender, birth 아직은 관련 정보를 받지 않을 예정, 그러나 birth는 아이디 생성 시간으로 기록될 예정
     new_user.gender = "X"
     new_user.password = "BoostcampOnlineTest"
-    crud.create_user(db, user = new_user)
+    crud.create_user(db, user = new_user)    
 
-    token = jwt.encode({"sub": nickname}, secret_key)
+    token = jwt.encode({"nickname": nickname, "feedback_id": None}, secret_key)
     response = RedirectResponse(url="/index", status_code=301)
     response.set_cookie("session", token)
 
     return response
 
-@app.get("/test")
-def read_private(username: str = Depends(get_current_user)):
-    return {"username": username, "private": "get some private data"}
 
 class Product(BaseModel):
     id: str

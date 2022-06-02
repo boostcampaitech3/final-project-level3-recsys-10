@@ -10,6 +10,8 @@ from ..DB.database import SessionLocal, engine
 from ..DB import schemas, models,crud
 from ...recommendAPI.model import AutoRec, get_model , predict_from_select_beer, popular_topk
 
+from jose import jwt
+
 router = APIRouter()
 
 # Dependency
@@ -32,7 +34,7 @@ async def recommend(request: Request, db: Session = Depends(get_db)):
 
 @router.post("/result")
 async def prefer(request: Request, 
-                nickname: str = Depends(main.get_current_user), 
+                user: list = Depends(main.get_current_user), 
                 db: Session = Depends(get_db),
                 model : AutoRec = Depends(get_model)):
     data_b = await request.body()
@@ -57,7 +59,7 @@ async def prefer(request: Request,
     RecommendedBeer_3 = crud.get_beer(db, beer_id = int(topk_pred[2]))
     RecommendedBeer_4 = crud.get_beer(db, beer_id = int(topk_pred[3]))
     
-    user_id = crud.get_user_id_by_profile_name(db, profile_name=nickname)
+    user_id = crud.get_user_id_by_profile_name(db, profile_name=user[0])
 
     # result 결과 => DB 저장
     max_id_before = db.query(func.max(models.Feedback.feedback_id)).filter(models.Feedback.user_id == user_id).scalar()
@@ -83,4 +85,8 @@ async def prefer(request: Request,
     db.commit()
     db.refresh(db_feedback)
 
-    return main.templates.TemplateResponse("result.html", {"request": request, "beers": [RecommendedBeer_1, RecommendedBeer_2, RecommendedBeer_3, RecommendedBeer_4]})
+    token = jwt.encode({"nickname": user[0], "feedback_id": int(max_id_before + 1)}, main.secret_key)
+    response = main.templates.TemplateResponse("result.html", {"request": request, "beers": [RecommendedBeer_1, RecommendedBeer_2, RecommendedBeer_3, RecommendedBeer_4]})
+    response.set_cookie("session", token)
+
+    return response
