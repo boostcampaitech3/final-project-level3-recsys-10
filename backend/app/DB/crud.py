@@ -17,10 +17,10 @@ def get_beer(db: Session, beer_id: int):
 
 def get_popular_review(db: Session):
     s = """
-    select beer_id, count(beer_id), avg(reviewScore)
+    select beer_id, count(beer_id), avg(review_score)
     from review
     group by beer_id
-    order by avg(reviewScore) desc
+    order by avg(review_score) desc
     """
     return db.execute(s).all()
 
