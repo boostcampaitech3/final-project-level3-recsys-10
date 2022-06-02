@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form, HTTPException
+from fastapi import FastAPI, Request, Form, Cookie, Security, HTTPException
 
 from fastapi.param_functions import Depends
 from uuid import UUID, uuid4
@@ -46,9 +46,6 @@ with open('backend/app/config.yaml') as f:
     secret_key = setting['secret_key']
 secret_key = secret_key
 
-templates = Jinja2Templates(directory="frontend/templates")
-app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
-
 def get_current_user(session: str = Depends(cookie_sec)):
     try:
         payload = jwt.decode(session, secret_key)
@@ -61,9 +58,13 @@ def get_current_user(session: str = Depends(cookie_sec)):
         )
 
 from .routers import users, beers, reviewers
+
 app.include_router(users.router)
 app.include_router(beers.router)
 app.include_router(reviewers.router)
+
+templates = Jinja2Templates(directory="frontend/templates")
+app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def login(request: Request):

@@ -1,11 +1,12 @@
 # DB에 연결하여 직접적으로 Create(생성), Read(읽기), Update(갱신), Delete(삭제) 와 관련한 모듈들은 담당하는 곳
-import pandas as pd
-import numpy 
-import random
-
+from typing import List
 from sqlalchemy.orm import Session
 from sqlalchemy import func, and_
 from sqlalchemy.sql import text
+
+import numpy
+import random
+import pandas as pd
 
 from . import models
 from . import schemas
@@ -60,6 +61,17 @@ def get_popular_review(db: Session):
     order by avg(review_score) desc
     """
     return db.execute(s).all()
+
+def get_beer_review(db:Session, beer_id: int) -> List:
+    s= f"""
+    select u.profile_name, r.review_score, r.appearance, r.aroma, r.palate, r.taste, r.review_text
+    from review as r
+    join reviewer as u
+    on r.user_id = u.user_id
+    where r.beer_id = {beer_id};
+    """
+    review = db.execute(s).all()
+    return review
 
 def create_user(db: Session, user: schemas.UserCreate):
     fake_hashed_password = user.password + "notreallyhashed"    

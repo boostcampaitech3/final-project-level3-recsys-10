@@ -7,7 +7,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from ..DB.database import SessionLocal
-from ..DB import models,crud
+from ..DB import models, crud
 from ...recommendAPI.model import AutoRec, get_model , predict_from_select_beer, popular_topk
 
 from jose import jwt
@@ -31,7 +31,12 @@ async def index(request: Request, db: Session = Depends(get_db)):
 async def recommend(request: Request, db: Session = Depends(get_db)):
     beers= crud.get_coldstart_beer(db)
     return main.templates.TemplateResponse("recommend.html", {"request": request, "beers": beers})
-
+  
+@router.get("/beer", response_class=HTMLResponse)
+async def beerList(request: Request, db: Session = Depends(get_db)):
+    beers = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).limit(30).all()
+    return main.templates.TemplateResponse("beerList.html", {"request": request, "beers": beers})
+  
 @router.post("/result")
 async def prefer(request: Request, 
                 user: list = Depends(main.get_current_user), 
