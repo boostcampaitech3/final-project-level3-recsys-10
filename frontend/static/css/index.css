@@ -7,16 +7,16 @@
 .intro{
     background-color: #020a15;
     font-family: 'Nanum Gothic', sans-serif;
+    background-image: url(../img/index_background.jpg);
+    height: 50%;
     color: #FFFFFF;
-    border: 1px solid #dddddd;
-    border-radius: 10px;
     padding: 40px;
-    margin-top: 20px;
 }
 
 .intro > h1{
     color: #efeb8b;
     font-weight: bold;
+    margin-top: 5%;
 }
 
 .intro > p{
@@ -34,10 +34,17 @@
     margin: 20px 0 20px 0;
 }
 
+.content{
+    margin: 0 auto;
+    
+}
+
 .beer-page{
     display: grid;
-    grid-template-columns: repeat(6, auto);
+    justify-content: center;    
+    grid-template-columns: repeat(6, 200px);
     column-gap: 4px;
+
 }
 
 .beer{
@@ -48,8 +55,8 @@
 }
 
 .photo{
-    width: auto;
-    height: 150px;
+    width: 200px;
+    height: 200px;
 }
 
 .info > #name{
@@ -69,6 +76,6 @@
     color: #2786d1;
     background-color: white;
     border: none;
-    float: right;
+    float: left;
     margin-top: 10px;
 }

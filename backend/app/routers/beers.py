@@ -26,7 +26,7 @@ def get_db():
 
 @router.get("/index", response_class=HTMLResponse)
 async def index(request: Request, db: Session = Depends(get_db)):
-    beers = db.query(models.Beer.beer_name, models.Beer.abv, models.Beer.image_url).limit(6).all()
+    beers = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).limit(6).all()
     return main.templates.TemplateResponse("index.html", {"request": request, "beers": beers})
 
 @router.get("/recommend", response_class=HTMLResponse)

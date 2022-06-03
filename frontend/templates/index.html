@@ -15,7 +15,7 @@
 
 <body>
     {% include 'header.html' %}
-    <div class="container">
+    <div class="wrapper">
         <div class="intro">
             <h1>4캔 맥주 추천</h1>
             <p>오늘도 힘든 하루를 보낸 당신<br>
@@ -23,20 +23,20 @@
             <input type="button" class="rec-beer-btn" onClick="location.href='/recommend'" value="4캔 맥주 추천 받으러 가기 > ">
         </div>
         <hr id="contour">
-        <div class="beer-page">
-            {% for beer in beers %}
-            <div class="beer">
-                <img class="photo" src={{ beer[2] }}>
-                <div class="info">
-                    <span id="name">{{ beer[0] }}</span><br>
-                    <span id="abc">도수: {{ beer[1] }}</span><br>
-                    <!-- <span id="score">평점: {{ beer[2] }}</span> -->
+        <div class="content">
+            <div class="beer-page">
+                {% for beer in beers %}
+                <div class="beer">
+                    <a href="beer/{{  beer[0]  }}"><img class="photo" src={{ beer[2] }}></a>
+                    <div class="info">
+                        <span id="name">{{ beer[1] }}</span><br>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-        <div class="beer-btn">
-            <input type="button" onClick="location.href='/beer'" value="더보기 >">
+            <div class="beer-btn">
+                <input type="button" onClick="location.href='/beer'" value="더보기 >">
+            </div>
         </div>
     </div>
     {% include 'footer.html' %}

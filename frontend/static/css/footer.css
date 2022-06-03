@@ -3,12 +3,13 @@ html, body {
     height: 100%
 }
 
-.container {
-    min-height: 75%;
+.wrapper {
+    height: 200px;
+    min-height: 100%;
     position: relative;
 }
 
-footer {
+#footer-contour {
     position: relative; 
     transform: translatY(-100%);
     padding-bottom: 20px;
