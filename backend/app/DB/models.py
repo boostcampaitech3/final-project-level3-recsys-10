@@ -46,6 +46,7 @@ class Feedback(Base):
 
     feedback_id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("reviewer.user_id"), primary_key=True)
+    recommend_type = Column(Integer, nullable = True)
     recommend = Column(Integer, nullable = True)
     beer1_id = Column(Integer, nullable = False)
     beer2_id = Column(Integer, nullable = False)
