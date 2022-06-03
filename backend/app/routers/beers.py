@@ -47,14 +47,17 @@ async def prefer(request: Request,
     data_b = await request.body()
     data_b = str(data_b, 'utf-8')
     data_b = data_b.split('&') # 리스트
-    
-    recommend_type = random.randrange(0,2)
+    user_id = crud.get_user_id_by_profile_name(db, profile_name=user[0])
 
+    recommend_type = random.randrange(0,2)
+    recommend_type = 0
     try:
         data_dict = {}
         for i in data_b:
             beer_id, rate = i.split('=')
             data_dict[int(beer_id)] = int(rate)
+        crud.create_csscore(db, submit = data_dict, user_id = user_id)
+
         if recommend_type == 0:
             # AutoRec
             # topk_pred = predict_from_select_beer(model, data_dict)
@@ -70,15 +73,13 @@ async def prefer(request: Request,
         recommend_type = 1
         data = crud.get_popular_review(db)
         topk_pred = popular_topk(data, topk=4, method='count')
-        print("----------------------pop-----------------------------")
-        print(topk_pred)
-    
+
     RecommendedBeer_1 = crud.get_beer(db, beer_id = int(topk_pred[0])) # Beer
     RecommendedBeer_2 = crud.get_beer(db, beer_id = int(topk_pred[1]))
     RecommendedBeer_3 = crud.get_beer(db, beer_id = int(topk_pred[2]))
     RecommendedBeer_4 = crud.get_beer(db, beer_id = int(topk_pred[3]))
+        
     
-    user_id = crud.get_user_id_by_profile_name(db, profile_name=user[0])
 
     # result 결과 => DB 저장
     max_id_before = db.query(func.max(models.Feedback.feedback_id)).filter(models.Feedback.user_id == user_id).scalar()

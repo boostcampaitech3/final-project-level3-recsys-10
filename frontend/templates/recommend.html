@@ -18,7 +18,7 @@
             <span>당신이 마셨던 맥주에 대해서 알려주세요.</span><br>
             <span>저희에게 많이 알려줄수록 당신에게 맞는 추천을 해드릴 수 있어요!</span>
         </div>
-        <form action="result" method="post" enctype='application/json' id="prefer" target="_self">
+        <form action="result" method="post" enctype='application/json' id="prefer" name="preferForm">
             <div class="beer-select">
                 <div class="beer-info">
                     {% for beer in beers %}
@@ -44,7 +44,7 @@
                     </div>
                     {% endfor %}
                 </div>
-                <input type="submit" id="complete" value="제출">
+                <input type="button" id="complete" value="제출">
             </div>
         </form>
     </div>
@@ -53,17 +53,11 @@
 </body>
 
 <script>
-    $('#complete').click(function(){
-        test_data = $('#prefer').serializeArray();
-        $.ajax({
-            url: '/result',
-            type: 'POST',
-            data: test_data,
-            dataType : "json",
-            success: function(result){
-                console.log(test_data)
-            }
-        })
+   $('#complete').click(function () {
+        var prefer = document.preferForm;
+        prefer.submit();
     })
+</script>
+
 </script>
 </html>
