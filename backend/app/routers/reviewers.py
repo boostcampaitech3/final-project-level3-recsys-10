@@ -40,11 +40,11 @@ async def beer(request: Request, beer_id: int, db: Session = Depends(get_db)):
 @router.post("/beer/{beer_id}", response_class=HTMLResponse)
 async def beerEvaluation(beer_id: int, appearance: int = Form(...), aroma: int = Form(...),
                         palate: int = Form(...), taste: int = Form(...), comment: list = Form(...), 
-                        nickname: str = Depends(main.get_current_user), db: Session = Depends(get_db)):
+                        user: str = Depends(main.get_current_user), db: Session = Depends(get_db)):
 
     review_score = (appearance + aroma + palate + taste) // 4
 
-    user = crud.get_user_by_profile_name(db, profile_name=nickname)
+    user = crud.get_user_by_profile_name(db, profile_name=user[0])
 
     db_review = models.Review(
                  user_id=user.user_id, 
