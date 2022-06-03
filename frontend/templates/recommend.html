@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맥주 취향 선택</title>
+    <link href="{{ url_for('static', path='css/footer.css') }}" rel="stylesheet"> 
+    <link href="{{ url_for('static', path='css/select.css') }}" rel="stylesheet"> 
+    <link href="{{ url_for('static', path='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='css/boxed-check.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='css/boxed-check.min.css') }}" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <div class="container">
+        <div class="intro">
+            <span>당신이 마셨던 맥주에 대해서 알려주세요.</span><br>
+            <span>저희에게 많이 알려줄수록 당신에게 맞는 추천을 해드릴 수 있어요!</span>
+        </div>
+        <form action="result" method="post" enctype='application/json' id="prefer" target="_self">
+            <div class="beer-select">
+                <div class="beer-info">
+                    {% for beer in beers %}
+                    <div class="beer">
+                        <div class="info">
+                            <span id="name">{{ beer[1] }}</span><br>
+                        </div>
+                        <img class="photo" src={{ beer[2] }}>
+                        <div class="like-check">
+                            <div class="boxed-check-group boxed-check-success">
+                                <label class="boxed-check">
+                                    <input class="boxed-check-input" type="radio" name={{ beer[0] }} value="1">
+                                    <div class="boxed-check-label">&#128077;</div>
+                                </label>
+                            </div>
+                            <div class="boxed-check-group boxed-check-danger">
+                                <label class="boxed-check">
+                                    <input class="boxed-check-input" type="radio" name={{ beer[0] }} value="2">
+                                    <div class="boxed-check-label">&#128078;</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <input type="submit" id="complete" value="제출">
+            </div>
+        </form>
+    </div>
+    {% include 'footer.html' %}
+
+</body>
+
+<script>
+    $('#complete').click(function(){
+        test_data = $('#prefer').serializeArray();
+        $.ajax({
+            url: '/result',
+            type: 'POST',
+            data: test_data,
+            dataType : "json",
+            success: function(result){
+                console.log(test_data)
+            }
+        })
+    })
+</script>
+</html>

@@ -64,6 +64,7 @@ def predict_from_select_beer(model: AutoRec , data : dict):
     topk_pred_list = re_transform(topk_pred_list_idx)
     return topk_pred_list , topk_rating_list
 
+
 def indexing_from_model(rating_pred : list, topk :int = 4):
     # topk 맥주 index
     ind = np.argpartition(rating_pred, -topk)[-topk:]
@@ -79,3 +80,19 @@ def indexing_from_model(rating_pred : list, topk :int = 4):
     # rating 내림차순 모델 예측 맥주 평점 중 topk개
     topk_rating_list = rating_pred[topk_pred_list]
     return topk_pred_list.tolist() , topk_rating_list.tolist()
+
+
+def steam_Rating(df, topk):
+    df['steam'] = df['reviewScore'] - ((df['reviewScore']  - 3.0) * (2 ** (-1 * np.log10(df['count']))))
+    topk_pred = df.sort_values(by=['steam'],ascending=False).iloc[:topk]['beerID'].values.tolist()
+    return topk_pred
+
+def popular_topk(data, topk, method = 'steam'):
+    topk = 4
+    data = pd.DataFrame(data, columns=['beerID','count','reviewScore'])
+    if method == 'steam':
+        return steam_Rating(data, topk)
+    elif method == 'count':
+        return data.sort_values(by=['count'],ascending=False).iloc[:topk]['beerID'].values.tolist()
+    elif method == 'score':
+        return data.sort_values(by=['reviewScore'],ascending=False).iloc[:topk]['beerID'].values.tolist()

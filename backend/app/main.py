@@ -1,18 +1,30 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Form, Cookie, Security, HTTPException
+
 from fastapi.param_functions import Depends
 from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict
+from typing import List, Optional
 
 from datetime import datetime
-from ..recommendAPI.model import AutoRec, get_model , predict_from_select_beer
-from .routers import users, beers, reviewers
+from ..recommendAPI.model import AutoRec, get_model, predict_from_select_beer
 
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import text
 import backend.app.DB.crud as crud
 import backend.app.DB.schemas as schemas
 from backend.app.DB.database import SessionLocal, engine
 import backend.app.DB.models as models
+
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles 
+
+from starlette.responses import Response, HTMLResponse, RedirectResponse
+from starlette import status
+
+from fastapi.security import APIKeyCookie
+from jose import jwt
+
+import yaml
 
 # DB 서버에 연결
 models.Base.metadata.create_all(bind=engine)
@@ -27,9 +39,57 @@ def get_db():
 
 app = FastAPI()
 
+cookie_sec = APIKeyCookie(name="session")
+
+with open('backend/app/config.yaml') as f:
+    setting = yaml.safe_load(f)
+    secret_key = setting['secret_key']
+secret_key = secret_key
+
+def get_current_user(session: str = Depends(cookie_sec)):
+    try:
+        payload = jwt.decode(session, secret_key)
+        user = payload['nickname']
+        feedback_id = payload['feedback_id']
+        return [user, feedback_id]
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authentication"
+        )
+
+from .routers import users, beers, reviewers
+
 app.include_router(users.router)
 app.include_router(beers.router)
 app.include_router(reviewers.router)
+
+templates = Jinja2Templates(directory="frontend/templates")
+app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
+
+@app.get("/", response_class=HTMLResponse)
+async def login(request: Request):
+    return templates.TemplateResponse("nickname_login.html", {"request": request})
+
+@app.post("/", description="Insert profile_name", response_class=HTMLResponse)
+async def login_check(request: Request, response: Response, nickname: str = Form(...), db: Session = Depends(get_db)):
+    # 이미 존재하는 닉네임인지 확인하는 작업
+    isexist = crud.get_user_by_profile_name(db, profile_name = nickname)
+    if isexist:
+        return templates.TemplateResponse("nickname_login.html", {"request": request, "error": True})
+
+    # 새로운 유저 정보 등록
+    new_user = schemas.UserCreate()
+    new_user.profile_name = nickname # user_id, gender, birth 아직은 관련 정보를 받지 않을 예정, 그러나 birth는 아이디 생성 시간으로 기록될 예정
+    new_user.gender = "X"
+    new_user.password = "BoostcampOnlineTest"
+    crud.create_user(db, user = new_user)    
+
+    token = jwt.encode({"nickname": nickname, "feedback_id": None}, secret_key)
+    response = RedirectResponse(url="/index", status_code=301)
+    response.set_cookie("session", token)
+
+    return response
+
 
 class Product(BaseModel):
     id: str
@@ -110,6 +170,9 @@ def preference_select(products : dict,
     RecommendedBeer_3 = crud.get_beer(db, beer_id = int(topk_pred[2]))
     RecommendedBeer_4 = crud.get_beer(db, beer_id = int(topk_pred[3]))
 
-    # print(">>>>", RecommendedBeer_1.beer_id)
-
     return [RecommendedBeer_1, RecommendedBeer_2, RecommendedBeer_3, RecommendedBeer_4]
+
+@app.post("/coldstart", description= "유저에게 보여줄 맥주의 리스트를 보여줍니다", response_model=List[schemas.Beer])
+def showing_coldstart(db: Session = Depends(get_db)):
+    coldstart_beers  = crud.get_coldstart_beer(db)
+    return coldstart_beers

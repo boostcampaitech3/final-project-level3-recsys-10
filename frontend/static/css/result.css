@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+
+.container{
+    display: grid;
+    grid-template-rows: 120px 400px auto auto;
+    place-items: center; 
+}
+
+.intro > h2{
+    font-family: 'Nanum Gothic', sans-serif;
+    font-weight: bold;
+}
+
+.beer-recommend-result{
+    display: grid;
+}
+
+.beer-info{
+    display: grid;
+    grid-template-columns: repeat(4, 200px);
+    column-gap: 4px;
+}
+
+.beer{
+    display: grid;
+    grid-template-rows: 200px 100px auto;
+    place-items: center;
+}
+
+.photo{
+    width: 200px;
+    height: 200px;
+}
+
+.info{
+    text-align: center;
+}
+
+.like-check{
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 10px;
+}
+
+.feedback .like-check{
+    width: 100px;
+    margin: 0 auto;
+}
+
+.beer-recommend-result p{
+    text-align: center;
+}
+
+#complete{
+    width: 100px;
+    margin: 0 auto;
+}
