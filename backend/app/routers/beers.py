@@ -67,6 +67,7 @@ async def prefer(request: Request,
             topk_pred = popular_topk(data, topk=4, method='count')
     except:
         # 인기도 기반 추천
+        recommend_type = 1
         data = crud.get_popular_review(db)
         topk_pred = popular_topk(data, topk=4, method='count')
         print("----------------------pop-----------------------------")
