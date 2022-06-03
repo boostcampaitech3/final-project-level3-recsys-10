@@ -57,3 +57,11 @@ class Feedback(Base):
     beer3_score = Column(Integer, nullable = True)
     beer4_score = Column(Integer, nullable = True)
 
+class ColdstartScore(Base):
+    __tablename__ = "csscore"
+
+    csscore_id = Column(Integer, primary_key = True)
+    user_id = Column(Integer, ForeignKey("reviewer.user_id"))
+    beer_id = Column(Integer, ForeignKey("beer.beer_id"))
+    score = Column(Integer, nullable = True)
+
