@@ -1,18 +1,18 @@
-from backend.recommendAPI.s3rec.inference_api import inference
-from fastapi import APIRouter, Request
+import random
+
+from jose import jwt
+from fastapi import Depends, APIRouter, Request
 from fastapi.responses import HTMLResponse
-
-from .. import main
-
-from fastapi import Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+
+from .. import main
 from ..DB.database import SessionLocal
 from ..DB import models, crud
 from ...recommendAPI.model import AutoRec, get_model , predict_from_select_beer, popular_topk
 from ...recommendAPI.s3rec.inference_api import inference
+from backend.recommendAPI.s3rec.inference_api import inference
 
-from jose import jwt
 
 router = APIRouter()
 
@@ -47,20 +47,24 @@ async def prefer(request: Request,
     data_b = await request.body()
     data_b = str(data_b, 'utf-8')
     data_b = data_b.split('&') # 리스트
+    
+    recommend_type = random.randrange(0,2)
 
     try:
         data_dict = {}
         for i in data_b:
             beer_id, rate = i.split('=')
             data_dict[int(beer_id)] = int(rate)
-
-        # AutoRec
-        # topk_pred, topk_rating = predict_from_select_beer(model, data_dict)
-        
-        # S3Rec
-        beer_ids = crud.get_beer_id(db)
-        topk_pred = inference(data_dict, beer_ids)
-
+        if recommend_type == 0:
+            # AutoRec
+            # topk_pred = predict_from_select_beer(model, data_dict)
+            
+            # S3Rec
+            beer_ids = crud.get_beer_id(db)
+            topk_pred = inference(data_dict, beer_ids)
+        else :
+            data = crud.get_popular_review(db)
+            topk_pred = popular_topk(data, topk=4, method='count')
     except:
         # 인기도 기반 추천
         data = crud.get_popular_review(db)
@@ -84,6 +88,7 @@ async def prefer(request: Request,
     db_feedback = models.Feedback(
                 feedback_id=int(max_id_before + 1),
                 user_id=user_id, 
+                recommend_type = recommend_type,
                 recommend=None,
                 beer1_id=int(topk_pred[0]),
                 beer2_id=int(topk_pred[1]),
