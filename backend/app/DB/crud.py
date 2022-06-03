@@ -1,5 +1,5 @@
 # DB에 연결하여 직접적으로 Create(생성), Read(읽기), Update(갱신), Delete(삭제) 와 관련한 모듈들은 담당하는 곳
-from typing import List
+from typing import Dict, List
 from sqlalchemy.orm import Session
 from sqlalchemy import func, and_
 from sqlalchemy.sql import text
@@ -90,7 +90,7 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    return db_user\
+    return db_user
 
 def get_coldstart_beer(db: Session):
     # beerID, style 을 불러옴
@@ -137,7 +137,6 @@ def get_coldstart_beer(db: Session):
     }
     df['label'] = df['style'].apply(lambda x : style_dict[x])
     
-
     # return coldstart ID 
     ids = []
     for i in range(19):
@@ -153,3 +152,23 @@ def get_coldstart_beer(db: Session):
     items = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).filter(models.Beer.beer_id.in_(ids)).all()
     random.shuffle(items)  
     return items
+
+
+def create_csscore(db: Session, 
+                    submit: Dict,
+                    user_id: int):
+    max_id_before = db.query(func.max(models.ColdstartScore.csscore_id)).scalar()
+    if max_id_before == None:
+        max_id_before = 0
+
+    for i, (beer_id_, cs_score) in enumerate(submit.items()):
+        db_csscore = models.ColdstartScore(
+                        csscore_id = int(max_id_before + 1 + i), 
+                        user_id = user_id,
+                        beer_id = beer_id_,
+                        score = cs_score,
+                    )
+        db.add(db_csscore)
+    db.commit()
+    db.refresh(db_csscore)
+    return db_csscore
