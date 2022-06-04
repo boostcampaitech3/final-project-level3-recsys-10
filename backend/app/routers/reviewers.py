@@ -23,7 +23,7 @@ def get_db():
 @router.get("/beer/{beer_id}", response_class=HTMLResponse)
 async def beer(request: Request, beer_id: int, db: Session = Depends(get_db)):
     beer = crud.get_beer(db, beer_id=beer_id)
-    beerInfo = [beer.beer_name, beer.abv, beer.style, beer.image_url]
+    beerInfo = [beer.beer_name, round(beer.abv,1), beer.style, beer.image_url]
     '''
     description : reviews 객체에 있는 user_id를 통해 reviewer 테이블의 profile_name 받아오기(by. join)
     input : reviews 객체
