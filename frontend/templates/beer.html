@@ -27,36 +27,37 @@
 
                 <table class="info-table">
                     <tr>
-                        <td class="info">평점</td>
-                        <td>{{ beerInfo[1] }}</td>
-                    </tr>
-                    <tr>
-                        <td class="info">리뷰수</td>
-                        <td>{{ beerInfo[1] }}</td>
-                    </tr>
-                    <tr>
                         <td class="info">도수</td>
-                        <td>{{ beerInfo[1] }}</td>
+                        <td>{{ beerInfo[1] }} % </td>
                     </tr>
                     <tr>
                         <td class="info">스타일</td>
                         <td>{{ beerInfo[2] }}</td>
                     </tr>
                     <tr>
+                        <td class="info">평점</td>
+                        <td>{{ avg_review_score }} / 10</td>
+                    </tr>
+                    <tr>
+                        <td class="info">리뷰수</td>
+                        <td>{{ cnt_reviews }} 개 </td>
+                    </tr>
+
+                    <tr>
                         <td class="info">디자인</td>
-                        <td>{{ beerInfo[1] }}</td>
+                        <td>{{ avg_appearence }} / 10</td>
                     </tr>
                     <tr>
                         <td class="info">향</td>
-                        <td>{{ beerInfo[1] }}</td>
+                        <td>{{ avg_aroma }} / 10</td>
                     </tr>
                     <tr>
                         <td class="info">청량감</td>
-                        <td>{{ beerInfo[1] }}</td>
+                        <td>{{ avg_palate }} / 10</td>
                     </tr>
                     <tr>
                         <td class="info">맛</td>
-                        <td>{{ beerInfo[1] }}</td>
+                        <td>{{ avg_tasta }} / 10</td>
                     </tr>
                 </table>
             </div>

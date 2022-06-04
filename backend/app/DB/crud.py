@@ -83,7 +83,7 @@ def get_beer_review(db:Session, beer_id: int) -> List:
     where r.beer_id = {beer_id}
     order by r.review_time desc;
     """
-    review = db.execute(s).all()
+    review = db.execute(s).all()[:30]
     return review
 
 def create_user(db: Session, user: schemas.UserCreate):
