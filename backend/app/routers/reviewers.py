@@ -34,8 +34,13 @@ async def beer(request: Request, beer_id: int, db: Session = Depends(get_db)):
        [profile_name, reviewscore, appearance, aroma, palate, taste, reviewtext] 순
     '''
     reviews = crud.get_beer_review(db, beer_id)
-
-    return main.templates.TemplateResponse("beer.html", {"request": request, "beerInfo": beerInfo, "reviews": reviews})
+    avg_review_score, avg_appearence, avg_aroma, avg_palate, avg_tasta, cnt_reviews = crud.get_beer_scores(db, beer_id=beer_id)
+    
+    return main.templates.TemplateResponse("beer.html", 
+                                            {"request": request, "beerInfo": beerInfo, "reviews": reviews,
+                                             "avg_review_score":avg_review_score, "avg_appearence":avg_appearence,
+                                             "avg_aroma":avg_aroma, "avg_palate":avg_palate,"avg_tasta":avg_tasta,
+                                             "cnt_reviews":cnt_reviews})
 
 @router.post("/beer/{beer_id}", response_class=HTMLResponse)
 async def beerEvaluation(beer_id: int, appearance: int = Form(...), aroma: int = Form(...),
