@@ -1,11 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
 
+@media (max-width: 576px) {
+    .header-page, footer {
+        width: 1000px;
+    }
+}
+
+@media (max-width: 768px) and (min-width: 576px) {
+    .header-page, footer {
+        width: 1050px;
+    }
+}
+
+@media (max-width: 992px) and (min-width: 768px) {
+    .header-page, footer {
+        width: 1100px;
+    }
+}
+
 .container {
     display: grid;
     grid-template-rows: repeat(5, auto);
     margin-top: 50px;
     font-family: 'Nanum Gothic', sans-serif;
-
 }
 
 .beer-info {
@@ -42,7 +59,7 @@
 
 .score {
     display: grid;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: repeat(4, auto);
 }
 
 #comment {
@@ -65,7 +82,7 @@
 
 .user-score {
     display: grid;
-    grid-template-columns: 140px 200px 200px 200px 200px;
+    grid-template-columns: 140px repeat(4, 200px);
 }
 
 .username{
