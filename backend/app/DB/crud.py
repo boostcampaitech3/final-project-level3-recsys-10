@@ -56,6 +56,14 @@ def update_feedback_by_id(db: Session, user_id: int, feedback_id: int, data_list
 
     return db_feedback
 
+def get_beer_scores(db: Session, beer_id: int):
+    s= f"""
+    select avg(review_score), avg(appearance), avg(aroma), avg(palate), avg(taste), count(beer_id)
+    from review
+    where beer_id = {beer_id}
+    """
+
+    return list(db.execute(s).all()[0])
 
 def get_popular_review(db: Session):
     s = """
@@ -68,13 +76,14 @@ def get_popular_review(db: Session):
 
 def get_beer_review(db:Session, beer_id: int) -> List:
     s= f"""
-    select u.profile_name, r.review_score, r.appearance, r.aroma, r.palate, r.taste, r.review_text
+    select u.profile_name, r.review_score, r.appearance, r.aroma, r.palate, r.taste, r.review_text, r.review_time
     from review as r
     join reviewer as u
     on r.user_id = u.user_id
-    where r.beer_id = {beer_id};
+    where r.beer_id = {beer_id}
+    order by r.review_time desc;
     """
-    review = db.execute(s).all()
+    review = db.execute(s).all()[:30]
     return review
 
 def create_user(db: Session, user: schemas.UserCreate):

@@ -1,22 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
 
-.header nav a{
-    color: #d0d0d0;
-}
-
 .intro{
     background-color: #020a15;
     font-family: 'Nanum Gothic', sans-serif;
+    background-image: url(../img/index_background.jpg);
+    height: 300px;
     color: #FFFFFF;
-    border: 1px solid #dddddd;
-    border-radius: 10px;
-    padding: 40px;
-    margin-top: 20px;
+    background-position: center;
+    background-size: cover;
+    padding-left: 50px;
+    margin-top: 1em;
 }
 
 .intro > h1{
     color: #efeb8b;
     font-weight: bold;
+    vertical-align:middle;
+    padding: 50px 0 10px 0;
 }
 
 .intro > p{
@@ -25,7 +25,7 @@
 
 .intro > .rec-beer-btn{
     color: #ffc000;
-    background-color: #020a15;
+    background-color:transparent;
     border: none;
 }
 
@@ -34,10 +34,18 @@
     margin: 20px 0 20px 0;
 }
 
+.content{
+    margin: 0 auto;
+    
+}
+
 .beer-page{
     display: grid;
-    grid-template-columns: repeat(6, auto);
+    justify-content: center;    
+    grid-template-columns: repeat(auto-fill, minmax(5px, 250px));
     column-gap: 4px;
+    row-gap: 4px;
+    justify-content: center;
 }
 
 .beer{
@@ -48,8 +56,8 @@
 }
 
 .photo{
-    width: auto;
-    height: 150px;
+    width: 100%;
+    height: 100%;
 }
 
 .info > #name{
@@ -65,10 +73,13 @@
     font-size: 10px;
 }
 
+.beer-btn{
+    margin-bottom: 40px;
+}
+
 .beer-btn input{
     color: #2786d1;
     background-color: white;
     border: none;
     float: right;
-    margin-top: 10px;
 }
