@@ -49,8 +49,7 @@ async def prefer(request: Request,
     data_b = data_b.split('&') # 리스트
     user_id = crud.get_user_id_by_profile_name(db, profile_name=user[0])
 
-    recommend_type = random.randrange(0,2)
-    recommend_type = 0
+    recommend_choice = random.randrange(1,101)
     try:
         data_dict = {}
         for i in data_b:
@@ -58,21 +57,26 @@ async def prefer(request: Request,
             data_dict[int(beer_id)] = int(rate)
         crud.create_csscore(db, submit = data_dict, user_id = user_id)
 
-        if recommend_type == 0:
+        if recommend_choice % 2 == 0:
             # AutoRec
             # topk_pred = predict_from_select_beer(model, data_dict)
             
             # S3Rec
+            print('~~~~~~~~모델 기반 추천~~~~~~~~~~~~~~~')
             beer_ids = crud.get_beer_id(db)
             topk_pred = inference(data_dict, beer_ids)
+            recommend_type = 0
         else :
+            print('~~~~~~~~인기도 기반 추천~~~~~~~~~~~~~~~')
             data = crud.get_popular_review(db)
-            topk_pred = popular_topk(data, topk=4, method='count')
+            topk_pred = popular_topk(data, topk=4, method='steam')
+            recommend_type = 1
     except:
         # 인기도 기반 추천
+        print('~~~~~~~~예외 ) 인기도 기반 추천 ~~~~~~~~~~~~~~~')
         recommend_type = 1
         data = crud.get_popular_review(db)
-        topk_pred = popular_topk(data, topk=4, method='count')
+        topk_pred = popular_topk(data, topk=4, method='steam')
 
     RecommendedBeer_1 = crud.get_beer(db, beer_id = int(topk_pred[0])) # Beer
     RecommendedBeer_2 = crud.get_beer(db, beer_id = int(topk_pred[1]))
@@ -86,7 +90,6 @@ async def prefer(request: Request,
     
     if max_id_before == None:
         max_id_before = 0
-
     db_feedback = models.Feedback(
                 feedback_id=int(max_id_before + 1),
                 user_id=user_id, 
@@ -105,7 +108,6 @@ async def prefer(request: Request,
     db.add(db_feedback)
     db.commit()
     db.refresh(db_feedback)
-
     token = jwt.encode({"nickname": user[0], "feedback_id": int(max_id_before + 1)}, main.secret_key)
     response = main.templates.TemplateResponse("result.html", {"request": request, "beers": [RecommendedBeer_1, RecommendedBeer_2, RecommendedBeer_3, RecommendedBeer_4]})
     response.set_cookie("session", token)
