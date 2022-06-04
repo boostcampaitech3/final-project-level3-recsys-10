@@ -7,8 +7,9 @@ with open('backend/app/DB/db_config.yaml') as f:
     setting = yaml.safe_load(f)
     user = setting['user']
     password = setting['password']
+    gcp = setting['gcp']
 
-SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://" + user + ":" + password + "@0.0.0.0:5432/beerrecsysdb"
+SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://" + user + ":" + password + gcp
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
