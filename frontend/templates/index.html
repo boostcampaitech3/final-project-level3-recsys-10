@@ -5,23 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>도전맥주홀릭🍻</title>
     <link href="{{ url_for('static', path='css/index.css') }}" rel="stylesheet"> 
+    <link href="{{ url_for('static', path='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='css/header.css') }}" rel="stylesheet"> 
     <link href="{{ url_for('static', path='css/footer.css') }}" rel="stylesheet"> 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-    crossorigin="anonymous"></script>
 </head>
 
 <body>
     {% include 'header.html' %}
-    <div class="wrapper">
-        <div class="intro">
-            <h1>4캔 맥주 추천</h1>
-            <p>오늘도 힘든 하루를 보낸 당신<br>
-                오늘 하루의 피로를 잊을 수 있도록 당신의 취향에 맞는 맥주 4캔을 추천해드려요.</p>
-            <input type="button" class="rec-beer-btn" onClick="location.href='/recommend'" value="4캔 맥주 추천 받으러 가기 > ">
-        </div>
+    <div class="intro">
+        <h1>4캔 맥주 추천</h1>
+        <p>오늘도 힘든 하루를 보낸 당신<br>
+            오늘 하루의 피로를 잊을 수 있도록 당신의 취향에 맞는 맥주 4캔을 추천해드려요.</p>
+        <input type="button" class="rec-beer-btn" onClick="location.href='/coldstart'" value="4캔 맥주 추천 받으러 가기 > ">
+    </div>
+    <div class="container">
         <hr id="contour">
         <div class="content">
             <div class="beer-page">
@@ -34,9 +31,9 @@
                 </div>
                 {% endfor %}
             </div>
-            <div class="beer-btn">
-                <input type="button" onClick="location.href='/beer'" value="더보기 >">
-            </div>
+        </div>
+        <div class="beer-btn">
+            <input type="button" onClick="location.href='/beer'" value="더보기 >">
         </div>
     </div>
     {% include 'footer.html' %}

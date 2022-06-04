@@ -76,12 +76,12 @@ def get_popular_review(db: Session):
 
 def get_beer_review(db:Session, beer_id: int) -> List:
     s= f"""
-    select u.profile_name, r.review_score, r.appearance, r.aroma, r.palate, r.taste, r.review_text
+    select u.profile_name, r.review_score, r.appearance, r.aroma, r.palate, r.taste, r.review_text, r.review_time
     from review as r
     join reviewer as u
     on r.user_id = u.user_id
-    where r.beer_id = {beer_id};
-    order by review_time desc
+    where r.beer_id = {beer_id}
+    order by r.review_time desc;
     """
     review = db.execute(s).all()
     return review

@@ -26,17 +26,17 @@ def get_db():
 
 @router.get("/index", response_class=HTMLResponse)
 async def index(request: Request, db: Session = Depends(get_db)):
-    beers = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).limit(6).all()
+    beers = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).limit(10).all()
     return main.templates.TemplateResponse("index.html", {"request": request, "beers": beers})
 
-@router.get("/recommend", response_class=HTMLResponse)
-async def recommend(request: Request, db: Session = Depends(get_db)):
+@router.get("/coldstart", response_class=HTMLResponse)
+async def coldstart(request: Request, db: Session = Depends(get_db)):
     beers= crud.get_coldstart_beer(db)
-    return main.templates.TemplateResponse("recommend.html", {"request": request, "beers": beers})
+    return main.templates.TemplateResponse("coldstart.html", {"request": request, "beers": beers})
 
 @router.get("/beer", response_class=HTMLResponse)
 async def beerList(request: Request, db: Session = Depends(get_db)):
-    beers = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).limit(30).all()
+    beers = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).all()
     return main.templates.TemplateResponse("beerList.html", {"request": request, "beers": beers})
 
 @router.post("/result")
