@@ -65,3 +65,7 @@ class ColdstartScore(Base):
     beer_id = Column(Integer, ForeignKey("beer.beer_id"))
     score = Column(Integer, nullable = True)
 
+class TargetBeer(Base):
+    __tablename__ = "targetbeer"
+
+    beer_id = Column(Integer, primary_key=True)
