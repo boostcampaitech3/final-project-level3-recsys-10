@@ -34,7 +34,7 @@ class Review(Base):
     beer_id = Column(Integer, ForeignKey("beer.beer_id"), primary_key=True)
     review_score = Column(Float, nullable=False)
     review_text = Column(VARCHAR, nullable=True)
-    review_time = Column(DateTime, nullable=False, default=datetime.now)
+    review_time = Column(DateTime, nullable=False, default=datetime.now, primary_key=True)
     appearance = Column(Float, nullable=True)
     aroma = Column(Float, nullable=True)
     palate = Column(Float, nullable=True)
@@ -65,3 +65,7 @@ class ColdstartScore(Base):
     beer_id = Column(Integer, ForeignKey("beer.beer_id"))
     score = Column(Integer, nullable = True)
 
+class TargetBeer(Base):
+    __tablename__ = "targetbeer"
+
+    beer_id = Column(Integer, ForeignKey("beer.beer_id"), primary_key=True)

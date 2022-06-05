@@ -19,7 +19,7 @@ def inference(input: Dict, filter_ids):
     print("!!!!!!!!!!!!!!!!!!S3Rec!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--data_dir", default="data/", type=str)
+    parser.add_argument("--data_dir", default="data/train/", type=str)
     parser.add_argument("--output_dir", default="backend/recommendAPI/s3rec/output/", type=str)
     parser.add_argument("--data_name", default="rb", type=str)
     parser.add_argument("--do_eval", action="store_true")
@@ -78,7 +78,7 @@ def inference(input: Dict, filter_ids):
     # args.data_file = args.data_dir + "train_ratings.csv"
     item2attribute_file = os.path.join(args.data_dir, args.data_name + "_item2attributes.json")
     # item2attribute_file = args.data_dir + args.data_name + "_item2attributes.json"
-    max_item = 9335
+    max_item = 9335 # (시스템에서 9337일때와 같음) # TODO DB에서 참조하도록 만들기
 
     item2attribute, attribute_size = get_item2attribute_json(item2attribute_file)
 
@@ -116,25 +116,6 @@ def inference(input: Dict, filter_ids):
 
     input_ids = torch.tensor(input_ids, dtype=torch.long).unsqueeze(0).to("cuda:0")
     input_ratings = torch.tensor(input_ratings, dtype=torch.float32).unsqueeze(0).to("cuda:0")
-
-    # attention_mask
-    attention_mask = (input_ids > 0).long()
-    weighted_mask = input_ratings
-
-    # extended_attention_mask
-    extended_attention_mask = attention_mask.unsqueeze(1).unsqueeze(2)  # torch.int64
-    extended_weighted_mask = weighted_mask.unsqueeze(1).unsqueeze(2)
-
-    max_len = attention_mask.size(-1)
-    attn_shape = (1, max_len, max_len) 
-    
-    # subsequent_mask
-    subsequent_mask = torch.triu(torch.ones(attn_shape), diagonal=1)    
-    subsequent_mask = (subsequent_mask == 0).unsqueeze(1)
-    subsequent_mask = subsequent_mask.long().to("cuda:0")
-
-    extended_attention_mask = extended_attention_mask * subsequent_mask
-    extended_attention_mask = (1.0 - extended_attention_mask) * -10000.0
 
     # 모델 run finetune = inference
     recommend_output = model.finetune(input_ids, input_ratings)

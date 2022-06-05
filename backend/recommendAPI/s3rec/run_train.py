@@ -109,19 +109,19 @@ def main():
     train_dataset = SASRecDataset(args, user_seq, rating_seq, data_type="train")
     train_sampler = RandomSampler(train_dataset)
     train_dataloader = DataLoader(
-        train_dataset, sampler=train_sampler, batch_size=args.batch_size
+        train_dataset, sampler=train_sampler, batch_size=args.batch_size, drop_last=True
     )
 
     eval_dataset = SASRecDataset(args, user_seq, rating_seq, data_type="valid")
     eval_sampler = SequentialSampler(eval_dataset)
     eval_dataloader = DataLoader(
-        eval_dataset, sampler=eval_sampler, batch_size=args.batch_size
+        eval_dataset, sampler=eval_sampler, batch_size=args.batch_size, drop_last=False
     )
 
     test_dataset = SASRecDataset(args, user_seq, rating_seq, data_type="test")
     test_sampler = SequentialSampler(test_dataset)
     test_dataloader = DataLoader(
-        test_dataset, sampler=test_sampler, batch_size=args.batch_size
+        test_dataset, sampler=test_sampler, batch_size=args.batch_size, drop_last=False
     )
 
     model = S3RecModel(args=args)
