@@ -26,6 +26,9 @@ def get_beer(db: Session, beer_id: int):
 def get_beer_id(db: Session):
     return db.query(models.Beer.beer_id).all()
 
+def get_target_beer_id(db: Session):
+    return db.query(models.TargetBeer.beer_id).all()
+
 def update_feedback_by_id(db: Session, user_id: int, feedback_id: int, data_list: list):
     # db_feedback = db.query(models.Feedback).filter(models.Feedback.user_id == user_id).filter(models.Feedback.feedback_id == feedback_id)
     db_feedback = db.query(models.Feedback).filter(and_(models.Feedback.user_id == user_id, models.Feedback.feedback_id == feedback_id)).first()

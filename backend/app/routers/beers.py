@@ -63,7 +63,8 @@ async def prefer(request: Request,
             
             # S3Rec
             print('~~~~~~~~모델 기반 추천~~~~~~~~~~~~~~~')
-            beer_ids = crud.get_beer_id(db)
+            # beer_ids = crud.get_beer_id(db)
+            beer_ids = crud.get_target_beer_id(db)  # Filtering target beer id 
             topk_pred = inference(data_dict, beer_ids)
             recommend_type = 0
         else :
