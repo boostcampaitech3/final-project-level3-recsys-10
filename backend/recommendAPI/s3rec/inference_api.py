@@ -19,7 +19,7 @@ def inference(input: Dict, filter_ids):
     print("!!!!!!!!!!!!!!!!!!S3Rec!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--data_dir", default="data/", type=str)
+    parser.add_argument("--data_dir", default="data/train/", type=str)
     parser.add_argument("--output_dir", default="backend/recommendAPI/s3rec/output/", type=str)
     parser.add_argument("--data_name", default="rb", type=str)
     parser.add_argument("--do_eval", action="store_true")

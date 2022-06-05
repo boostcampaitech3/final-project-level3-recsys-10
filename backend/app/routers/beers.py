@@ -26,7 +26,18 @@ def get_db():
 
 @router.get("/index", response_class=HTMLResponse)
 async def index(request: Request, db: Session = Depends(get_db)):
-    beers = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).limit(10).all()
+    s = """
+    SELECT targetbeer.beer_id, beer.beer_name
+    FROM targetbeer
+    INNER JOIN beer
+    ON targetbeer.beer_id=beer.beer_id
+    LIMIT 10
+    """
+    beers = [(
+        beer_id, 
+        beer_name,
+        f"https://raw.githubusercontent.com/minchoul2/beer_image/main/beer_image/{beer_id}.png") 
+            for beer_id, beer_name in db.execute(s).all()]
     return main.templates.TemplateResponse("index.html", {"request": request, "beers": beers})
 
 @router.get("/coldstart", response_class=HTMLResponse)
@@ -36,7 +47,18 @@ async def coldstart(request: Request, db: Session = Depends(get_db)):
 
 @router.get("/beer", response_class=HTMLResponse)
 async def beerList(request: Request, db: Session = Depends(get_db)):
-    beers = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).all()
+    s = """
+    SELECT targetbeer.beer_id, beer.beer_name
+    FROM targetbeer
+    INNER JOIN beer
+    ON targetbeer.beer_id=beer.beer_id
+    """
+    beers = [(
+        beer_id, 
+        beer_name,
+        f"https://raw.githubusercontent.com/minchoul2/beer_image/main/beer_image/{beer_id}.png") 
+            for beer_id, beer_name in db.execute(s).all()]
+
     return main.templates.TemplateResponse("beerList.html", {"request": request, "beers": beers})
 
 @router.post("/result")
@@ -63,7 +85,6 @@ async def prefer(request: Request,
             
             # S3Rec
             print('~~~~~~~~모델 기반 추천~~~~~~~~~~~~~~~')
-            # beer_ids = crud.get_beer_id(db)
             beer_ids = crud.get_target_beer_id(db)  # Filtering target beer id 
             topk_pred = inference(data_dict, beer_ids)
             recommend_type = 0
@@ -79,10 +100,10 @@ async def prefer(request: Request,
         data = crud.get_popular_review(db)
         topk_pred = popular_topk(data, topk=4, method='steam')
 
-    RecommendedBeer_1 = crud.get_beer(db, beer_id = int(topk_pred[0])) # Beer
-    RecommendedBeer_2 = crud.get_beer(db, beer_id = int(topk_pred[1]))
-    RecommendedBeer_3 = crud.get_beer(db, beer_id = int(topk_pred[2]))
-    RecommendedBeer_4 = crud.get_beer(db, beer_id = int(topk_pred[3]))
+    RecommendedBeer_1 = crud.get_beer_for_recommend(db, beer_id = int(topk_pred[0])) # Beer
+    RecommendedBeer_2 = crud.get_beer_for_recommend(db, beer_id = int(topk_pred[1]))
+    RecommendedBeer_3 = crud.get_beer_for_recommend(db, beer_id = int(topk_pred[2]))
+    RecommendedBeer_4 = crud.get_beer_for_recommend(db, beer_id = int(topk_pred[3]))
         
     
 
