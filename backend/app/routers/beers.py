@@ -83,7 +83,11 @@ async def prefer(request: Request,
     RecommendedBeer_3 = crud.get_beer(db, beer_id = int(topk_pred[2]))
     RecommendedBeer_4 = crud.get_beer(db, beer_id = int(topk_pred[3]))
         
-    
+    RecommendedBeer_1.abv = round(RecommendedBeer_1.abv, 1) # Beer
+    RecommendedBeer_2.abv = round(RecommendedBeer_2.abv, 1)
+    RecommendedBeer_3.abv = round(RecommendedBeer_3.abv, 1)
+    RecommendedBeer_4.abv = round(RecommendedBeer_4.abv, 1)
+
 
     # result 결과 => DB 저장
     max_id_before = db.query(func.max(models.Feedback.feedback_id)).filter(models.Feedback.user_id == user_id).scalar()
