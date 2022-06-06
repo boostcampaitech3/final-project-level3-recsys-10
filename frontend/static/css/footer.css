@@ -3,8 +3,8 @@ html, body {
     height: 100%
 }
 
-.container {
-    min-height: 75%;
+.wrapper, .container {
+    min-height: 100%;
     position: relative;
 }
 
@@ -12,7 +12,14 @@ footer {
     position: relative; 
     transform: translatY(-100%);
     padding-bottom: 20px;
+    background-color: rgb(63, 60, 60);
+    margin-top: 10px;
+}
+
+footer > p{
     font-family: 'Nanum Gothic', sans-serif;
     text-align: center;
-    font-size: 12px;
+    font-size: 10px;
+    color: white;
+    padding-top: 20px;
 }

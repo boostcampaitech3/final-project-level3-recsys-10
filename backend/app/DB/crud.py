@@ -1,5 +1,5 @@
 # DB에 연결하여 직접적으로 Create(생성), Read(읽기), Update(갱신), Delete(삭제) 와 관련한 모듈들은 담당하는 곳
-from typing import List
+from typing import Dict, List
 from sqlalchemy.orm import Session
 from sqlalchemy import func, and_
 from sqlalchemy.sql import text
@@ -22,6 +22,17 @@ def get_user_id_by_profile_name(db: Session, profile_name: str):
 
 def get_beer(db: Session, beer_id: int):
     return db.query(models.Beer).filter(models.Beer.beer_id == beer_id).first()
+
+def get_beer_for_recommend(db: Session, beer_id: int):
+    beer = db.query(models.Beer).filter(models.Beer.beer_id == beer_id).first()
+    beer.image_url = f"https://raw.githubusercontent.com/minchoul2/beer_image/main/beer_image/{beer.beer_id}.png"
+    return beer
+
+def get_beer_id(db: Session):
+    return db.query(models.Beer.beer_id).all()
+
+def get_target_beer_id(db: Session):
+    return db.query(models.TargetBeer.beer_id).all()
 
 def update_feedback_by_id(db: Session, user_id: int, feedback_id: int, data_list: list):
     # db_feedback = db.query(models.Feedback).filter(models.Feedback.user_id == user_id).filter(models.Feedback.feedback_id == feedback_id)
@@ -53,24 +64,45 @@ def update_feedback_by_id(db: Session, user_id: int, feedback_id: int, data_list
 
     return db_feedback
 
-def get_popular_review(db: Session):
-    s = """
-    select beer_id, count(beer_id), avg(review_score)
+def get_beer_scores(db: Session, beer_id: int):
+    s= f"""
+    select avg(review_score), avg(appearance), avg(aroma), avg(palate), avg(taste), count(beer_id)
     from review
-    group by beer_id
-    order by avg(review_score) desc
+    where beer_id = {beer_id}
+    """
+
+    return list(db.execute(s).all()[0])
+
+def get_popular_review(db: Session):
+    # (구 DB 용)
+    # s = """
+    # select beer_id, count(beer_id), avg(review_score)
+    # from review
+    # group by beer_id
+    # order by avg(review_score) desc
+    # """
+
+    # 현 DB 용
+    s= """
+    select targetbeer.beer_id, count(targetbeer.beer_id), avg(review.review_score)
+    FROM targetbeer
+    LEFT JOIN review
+    ON targetbeer.beer_id=review.beer_id
+    group by targetbeer.beer_id
+    order by avg(review.review_score) desc
     """
     return db.execute(s).all()
 
 def get_beer_review(db:Session, beer_id: int) -> List:
     s= f"""
-    select u.profile_name, r.review_score, r.appearance, r.aroma, r.palate, r.taste, r.review_text
+    select u.profile_name, r.review_score, r.appearance, r.aroma, r.palate, r.taste, r.review_text, r.review_time
     from review as r
     join reviewer as u
     on r.user_id = u.user_id
-    where r.beer_id = {beer_id};
+    where r.beer_id = {beer_id}
+    order by r.review_time desc;
     """
-    review = db.execute(s).all()
+    review = db.execute(s).all()[:30]
     return review
 
 def create_user(db: Session, user: schemas.UserCreate):
@@ -86,22 +118,18 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    return db_user\
+    return db_user
 
 def get_coldstart_beer(db: Session):
     # beerID, style 을 불러옴
-    beer_ids = []
-    styles = []
-    s = text(
-    "SELECT beer_id,style FROM Beer"
-    )
-    for i in db.execute(s):
-        beer_id, style = i
-        beer_ids.append(beer_id)
-        styles.append(style)
+    s = """
+    SELECT beer.beer_id, style 
+    FROM beer
+    INNER JOIN targetbeer
+    on beer.beer_id=targetbeer.beer_id;
+    """
+    df = pd.DataFrame(db.execute(s).all(), columns=['beer_id', 'style'])
 
-    id_dict = {id:style for id,style in zip(beer_ids,styles)}
-    df = pd.DataFrame(list(id_dict.items()), columns=['beerId','style'])
     # coldstart ID 생성
     style_dict = {
         'Amber Lager - International / Vienna':0,
@@ -125,6 +153,7 @@ def get_coldstart_beer(db: Session):
         'Pilsener / Pils / Pilsner':13,
         'Radler / Shandy':14,
         'Stout':14,
+        'Stout - Dry / Irish':14,            
         'Weissbier - Dunkelweizen':15,
         'Weissbier - Hefeweizen':15,
         'Wheat Ale':16,
@@ -133,19 +162,41 @@ def get_coldstart_beer(db: Session):
     }
     df['label'] = df['style'].apply(lambda x : style_dict[x])
     
-
     # return coldstart ID 
     ids = []
     for i in range(19):
         tmp = df[df['label']==i]
         if len(tmp) == 1:
-            ids.extend(tmp['beerId'].values)
+            ids.extend(tmp['beer_id'].values)
         elif len(tmp) > 1 and len(tmp) <10:
-            ids.extend(numpy.random.choice(tmp['beerId'].values, 2,replace=False))
+            ids.extend(numpy.random.choice(tmp['beer_id'].values, 2,replace=False))
         else:
-            ids.extend(numpy.random.choice(tmp['beerId'].values, 4,replace=False))
+            ids.extend(numpy.random.choice(tmp['beer_id'].values, 4,replace=False))
     
     ids = [int(i) for i in ids]
-    items = db.query(models.Beer.beer_id, models.Beer.beer_name, models.Beer.image_url).filter(models.Beer.beer_id.in_(ids)).all()
+    items = db.query(models.Beer.beer_id, models.Beer.beer_name).filter(models.Beer.beer_id.in_(ids)).all()
+    items = [(beer_id, beer_name,
+            f"https://raw.githubusercontent.com/minchoul2/beer_image/main/beer_image/{beer_id}.png"
+                                ) for beer_id, beer_name in items]
     random.shuffle(items)  
     return items
+
+
+def create_csscore(db: Session, 
+                    submit: Dict,
+                    user_id: int):
+    max_id_before = db.query(func.max(models.ColdstartScore.csscore_id)).scalar()
+    if max_id_before == None:
+        max_id_before = 0
+
+    for i, (beer_id_, cs_score) in enumerate(submit.items()):
+        db_csscore = models.ColdstartScore(
+                        csscore_id = int(max_id_before + 1 + i), 
+                        user_id = user_id,
+                        beer_id = beer_id_,
+                        score = cs_score,
+                    )
+        db.add(db_csscore)
+    db.commit()
+    db.refresh(db_csscore)
+    return db_csscore
