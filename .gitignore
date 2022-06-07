@@ -4,6 +4,7 @@ data/
 */SLIM
 db_config.yaml
 config.yaml
+start.sh
 
 # data
 *.json
