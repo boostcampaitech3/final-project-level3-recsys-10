@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맥주 추천 결과</title>
+    <link href="{{ url_for('static', path='css/footer.css?ver=1') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='css/header.css') }}" rel="stylesheet"> 
+    <link href="{{ url_for('static', path='css/result.css?ver=1') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='css/boxed-check.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='css/boxed-check.min.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <div class="container">
+        <div class="intro">
+            <h2>당신이 좋아할 만한 맥주 4개입니다!</h2>
+        </div>
+        <form class="beer-feedback-form" method="post" id="feedback-form" action="/guide" name="feedbackForm">
+            <div class="beer-recommend-result">
+                <div class="beer-info">
+                    {% for beer in beers %}
+                    <div class="beer">
+                        <img class="photo" src={{ beer['image_url'] }}>
+                        <div class="info">
+                            <span class="name">{{ beer['beer_name'] }}</span><br>
+                            <span class="abv">도수: {{ beer['abv'] }}</span><br>
+                            <span class="style">스타일: {{ beer['style'] }}</span><br>
+                        </div>
+                        <div class="like-check">
+                            <div class="boxed-check-group boxed-check-success">
+                                <label class="boxed-check">
+                                    <input class="boxed-check-input" type="radio" name={{ beer['beer_id'] }} value="1">
+                                    <div class="boxed-check-label">&#128077;</div>
+                                </label>
+                            </div>
+                            <div class="boxed-check-group boxed-check-danger">
+                                <label class="boxed-check">
+                                    <input class="boxed-check-input" type="radio" name={{ beer['beer_id'] }} value="2">
+                                    <div class="boxed-check-label">&#128078;</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <p>조합이 마음에 드시나요? 조합에 대한 평가를 해주세요</p>
+                <div class="feedback">
+                    <div class="like-check">
+                        <div class="boxed-check-group boxed-check-success">
+                            <label class="boxed-check">
+                                <input class="boxed-check-input" type="radio" name="total" value="1">
+                                <div class="boxed-check-label">&#128077;</div>
+                            </label>
+                        </div>
+                        <div class="boxed-check-group boxed-check-danger">
+                            <label class="boxed-check">
+                                <input class="boxed-check-input" type="radio" name="total" value="2">
+                                <div class="boxed-check-label">&#128078;</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <input type="button" id="complete" value="피드백 제출">
+            </div>
+        </form>
+    </div>
+    {% include 'footer.html' %}
+
+</body>
+
+<script>
+    $('#complete').click(function () {
+        var feedback = document.feedbackForm;
+        feedback_data = $('#feedback-form').serializeArray();
+        if (feedback_data.length == 0) {
+            alert("최소 1개 이상의 피드백을 남기셔야 합니다!")
+        }
+        else {
+            feedback.submit();
+        }
+    })
+</script>
+
+</html>

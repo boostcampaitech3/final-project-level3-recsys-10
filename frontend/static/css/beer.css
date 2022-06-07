@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+
+@media (max-width: 576px) {
+    .header-page, footer {
+        width: 1000px;
+    }
+}
+
+@media (max-width: 768px) and (min-width: 576px) {
+    .header-page, footer {
+        width: 1050px;
+    }
+}
+
+@media (max-width: 992px) and (min-width: 768px) {
+    .header-page, footer {
+        width: 1100px;
+    }
+}
+
+.container {
+    display: grid;
+    grid-template-rows: repeat(5, auto);
+    margin-top: 50px;
+    font-family: 'Nanum Gothic', sans-serif;
+}
+
+.beer-info {
+    display: grid;
+    grid-template-columns: 320px auto;
+    column-gap: 20px;
+    place-items: center start;
+    border-radius: 150px;
+    border: 1px solid #cdcdcd;
+    font-size: 12px;
+}
+
+.info{
+    text-align: center;
+    width: 100px;
+}
+
+.photo {
+    place-items: center;
+    width: 300px;
+    height: 300px;
+    border-radius: 150px;
+}
+
+.name{
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.contour {
+    background-color: #d2d2d7;
+    margin: 40px 0 40px 0;
+}
+
+.score {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+}
+
+#comment {
+    width: 100%;
+    height: 70px;
+    resize: none;
+}
+
+#comment-btn {
+    width: 80px;
+    float: right;
+    border: none;
+    border-radius: 5px;
+    background-color: #cdcdcd;
+    color: #535353;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 5px 0 5px 0;
+}
+
+.user-score {
+    display: grid;
+    grid-template-columns: 140px repeat(4, 200px);
+}
+
+.username{
+    font-weight: bold;
+}
+
+.appearance, .aroma, .palate, .taste{
+    color: #7c7676;
+    font-size: 14px;
+}
+
+/* 별점 기능 */
+/* 출처 : https://gurtn.tistory.com/80 */
+#appearance-star,
+#aroma-star,
+#palate-star,
+#taste-star,
+.appearance-star,
+.aroma-star,
+.palate-star,
+.taste-star {
+    position: relative;
+    font-size: 1.2rem;
+    color: #ddd;
+}
+
+#appearance-star input,
+#aroma-star input,
+#palate-star input,
+#taste-star input,
+.appearance-star input,
+.aroma-star input,
+.palate-star input,
+.taste-star input {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+#appearance-star span,
+#aroma-star span,
+#palate-star span,
+#taste-star span{
+    width: 0;
+    position: absolute;
+    left: 0;
+    color: rgb(253, 202, 113);
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.appearance-star span,
+.aroma-star span,
+.palate-star span,
+.taste-star span {
+    position: absolute;
+    left: 0;
+    color: rgb(253, 202, 113);
+    overflow: hidden;
+    pointer-events: none;
+}
