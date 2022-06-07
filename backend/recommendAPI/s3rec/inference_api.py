@@ -44,12 +44,12 @@ def inference(input: Dict, filter_ids):
         "--hidden_dropout_prob", type=float, default=0.5, help="hidden dropout p"
     )
     parser.add_argument("--initializer_range", type=float, default=0.02)
-    parser.add_argument("--max_seq_length", default=300, type=int)
+    parser.add_argument("--max_seq_length", default=500, type=int)
 
     # train args
     parser.add_argument("--lr", type=float, default=0.001, help="learning rate of adam")
     parser.add_argument(
-        "--batch_size", type=int, default=512, help="number of batch_size"
+        "--batch_size", type=int, default=256, help="number of batch_size"
     )
     parser.add_argument("--epochs", type=int, default=200, help="number of epochs")
     parser.add_argument("--no_cuda", action="store_true")
@@ -78,7 +78,7 @@ def inference(input: Dict, filter_ids):
     # args.data_file = args.data_dir + "train_ratings.csv"
     item2attribute_file = os.path.join(args.data_dir, args.data_name + "_item2attributes.json")
     # item2attribute_file = args.data_dir + args.data_name + "_item2attributes.json"
-    max_item = 9335 # (시스템에서 9337일때와 같음) # TODO DB에서 참조하도록 만들기
+    max_item = 9336 # (시스템에서 9337일때와 같음) # TODO DB에서 참조하도록 만들기
 
     item2attribute, attribute_size = get_item2attribute_json(item2attribute_file)
 
@@ -127,16 +127,19 @@ def inference(input: Dict, filter_ids):
     
     # 점수를 sorting
     sorted_items = result_scores.argsort()
+    input_ids = input_ids.cpu().data.numpy().copy()
 
     # 방금 체크 했던거는 제거
     checked_right_before = input_ids[input_ids > 0]
+
     sorted_items = sorted_items[~pd.Series(sorted_items).isin(checked_right_before)]
 
+    checked_right_before = le.inverse_transform(checked_right_before)
     # 원래의 id로 되돌아오기
-    sorted_items = le.inverse_transform(sorted_items.argsort()) # 뒤로갈수록 추천해주고 싶은 맥주 
+    sorted_items = le.inverse_transform(sorted_items) # 뒤로갈수록 추천해주고 싶은 맥주 
 
     # 한국 맥주 의 아이디 가져오기
-    target_items = [int(*i) for i in filter_ids] # DB불러온 것으로 교체
+    target_items = [int(*i) for i in filter_ids]# DB불러온 것으로 교체
     sorted_target_items = sorted_items[pd.Series(sorted_items).isin(target_items)]
 
     K=4
