@@ -1,24 +1,55 @@
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
 
+@media (max-width: 576px) {
+    .header-page, footer {
+        width: 1000px;
+    }
+}
+
+@media (max-width: 768px) and (min-width: 576px) {
+    .header-page, footer {
+        width: 1050px;
+    }
+}
+
+@media (max-width: 992px) and (min-width: 768px) {
+    .header-page, footer {
+        width: 1100px;
+    }
+}
+
 .container {
     display: grid;
     grid-template-rows: repeat(5, auto);
     margin-top: 50px;
     font-family: 'Nanum Gothic', sans-serif;
-
 }
 
 .beer-info {
     display: grid;
-    grid-template-columns: 200px auto;
+    grid-template-columns: 320px auto;
     column-gap: 20px;
     place-items: center start;
+    border-radius: 150px;
+    border: 1px solid #cdcdcd;
+    font-size: 12px;
+}
+
+.info{
+    text-align: center;
+    width: 100px;
 }
 
 .photo {
     place-items: center;
-    width: 200px;
-    height: 200px;
+    width: 300px;
+    height: 300px;
+    border-radius: 150px;
+}
+
+.name{
+    font-weight: bold;
+    font-size: 18px;
 }
 
 .contour {
@@ -28,7 +59,7 @@
 
 .score {
     display: grid;
-    grid-template-columns: 200px 160px 160px 160px;
+    grid-template-columns: repeat(4, auto);
 }
 
 #comment {
@@ -40,11 +71,27 @@
 #comment-btn {
     width: 80px;
     float: right;
+    border: none;
+    border-radius: 5px;
+    background-color: #cdcdcd;
+    color: #535353;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 5px 0 5px 0;
 }
 
 .user-score {
     display: grid;
-    grid-template-columns: 50px 160px 160px 160px 300px;
+    grid-template-columns: 140px repeat(4, 200px);
+}
+
+.username{
+    font-weight: bold;
+}
+
+.appearance, .aroma, .palate, .taste{
+    color: #7c7676;
+    font-size: 14px;
 }
 
 /* 별점 기능 */

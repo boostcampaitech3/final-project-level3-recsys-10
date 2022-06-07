@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+
+.intro{
+    height: 200px;
+    background-image: url(../img/coldstart-intro.webp);
+    background-position: center;
+    background-size: cover;
+    margin-bottom: 50px;
+}
+
+.intro-context{
+    font-family: 'Nanum Gothic', sans-serif;
+    font-weight: bold;
+    font-size: 22px;
+    color: white;
+    text-align: center;
+    vertical-align:middle;
+    padding-top: 60px;
+}
+
+.beer-info{
+    font-family: 'Nanum Gothic', sans-serif;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(5px, 250px));
+    grid-template-rows: repeat(6, auto);
+    column-gap: 4px;
+    row-gap: 10px;
+    justify-content: center;
+}
+
+.beer-select{
+    margin-bottom: 50px;
+}
+
+.beer{
+    display: grid;
+    grid-template-rows: 30px 250px auto;
+    place-items: center;
+    row-gap: 10px;
+}
+
+.photo{
+    width: 100%;
+    height: 100%;
+}
+
+.name{
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.like-check{
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 10px;
+}
+
+#complete{
+    border-radius: 5px;
+    border: 2px solid #060606;
+    display: block;
+    margin: 0 auto;
+    background-color: #ffffff;
+    margin-top: 20px;
+    width: 100px;
+    height: 40px;
+}
+
+#complete:hover{
+    background-color: #c2c2c2;
+}

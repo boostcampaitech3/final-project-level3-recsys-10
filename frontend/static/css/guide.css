@@ -1,13 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
 
-.intro{
-    margin-top: 100px;
+.intro h2, h3{
+    margin: 100px 0 50px 0;
     font-family: 'Nanum Gothic', sans-serif;
-    font-size: 22px;
     text-align: center;
+    font-weight: bold;
+}
+
+.intro h3{
+    margin-bottom: 30px;
 }
 
 #review-move{
     width: fit-content;
     margin: auto;
+}
+
+#review-btn{
+    border: none;
+    background-color: #bfbbb5;
+    color: #555454;
+    border-radius: 4px;
+    padding: 10px;
 }

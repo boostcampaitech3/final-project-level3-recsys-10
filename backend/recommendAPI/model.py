@@ -83,16 +83,16 @@ def indexing_from_model(rating_pred : list, topk :int = 4):
 
 
 def steam_Rating(df, topk):
-    df['steam'] = df['reviewScore'] - ((df['reviewScore']  - 3.0) * (2 ** (-1 * np.log10(df['count']))))
-    topk_pred = df.sort_values(by=['steam'],ascending=False).iloc[:topk]['beerID'].values.tolist()
+    df['steam'] = df['review_score'] - ((df['review_score']  - 3.0) * (2 ** (-1 * np.log10(df['count']))))
+    topk_pred = df.sort_values(by=['steam'],ascending=False).iloc[:topk]['beer_id'].values.tolist()
     return topk_pred
 
 def popular_topk(data, topk, method = 'steam'):
     topk = 4
-    data = pd.DataFrame(data, columns=['beerID','count','reviewScore'])
+    data = pd.DataFrame(data, columns=['beer_id','count','review_score'])
     if method == 'steam':
         return steam_Rating(data, topk)
     elif method == 'count':
-        return data.sort_values(by=['count'],ascending=False).iloc[:topk]['beerID'].values.tolist()
+        return data.sort_values(by=['count'],ascending=False).iloc[:topk]['beer_id'].values.tolist()
     elif method == 'score':
-        return data.sort_values(by=['reviewScore'],ascending=False).iloc[:topk]['beerID'].values.tolist()
+        return data.sort_values(by=['review_score'],ascending=False).iloc[:topk]['beer_id'].values.tolist()

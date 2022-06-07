@@ -1,40 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
 
-.container{
-    display: grid;
-    grid-template-rows: 300px auto;
-    place-items: center;
+.intro{
+    width: 100%;
+    height: 200px;
+    background-image: url(../img/review_back.webp);
+    background-position: center;
+    background-size: cover;
+    margin-bottom: 60px;
 }
 
-.intro > span{
+.intro-context{
     font-family: 'Nanum Gothic', sans-serif;
     font-weight: bold;
-}
-
-.intro{
     font-size: 22px;
+    color: white;
     text-align: center;
+    vertical-align:middle;
+    padding-top: 60px;
 }
 
 .beer-info{
     font-family: 'Nanum Gothic', sans-serif;
     display: grid;
-    grid-template-columns: repeat(5, auto);
-    grid-template-rows: repeat(6, auto);
+    grid-template-columns: repeat(auto-fill, minmax(5px, 200px));
+    grid-template-rows: repeat(auto-fill, 200px);
     column-gap: 4px;
-    row-gap: 10px;
-}
-
-.beer{
-    display: grid;
-    grid-template-rows: 30px 200px auto;
-    place-items: center;
-    row-gap: 10px;
+    row-gap: 4px;
+    justify-content: center;
 }
 
 .photo{
-    width: 200px;
-    height: 200px;
+    width: 100%;
+    height: 100%;
 }
 
 a{
