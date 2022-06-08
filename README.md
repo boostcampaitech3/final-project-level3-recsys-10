@@ -55,13 +55,14 @@ final-project-level3-recsys-10
 └── pyproject.toml
 ```
 
-## 👨‍👩‍👧‍👧 Collaborate Working
+## 🎞 Demo
 - 서빙을 위한 프론트 페이지
 <img width="500" height="300" alt="Front Page" src="https://user-images.githubusercontent.com/41297473/172408055-1774782b-848f-435d-bd93-048ae9a0668e.gif">
 
 - 유저의 Cold start를 해결하기 위한 페이지
 <img width="500" height="300" alt="Cold start" src="https://user-images.githubusercontent.com/41297473/172411181-f71e3d52-edf7-485d-a070-dd9764475c12.gif">
 
+## 👨‍👩‍👧‍👧 Collaborate Working
 - Github Issues 기반 작업 진행
 <img width="500" height="300" alt="Git Issues" src="https://user-images.githubusercontent.com/41297473/172408276-b164089a-6f57-4ad3-ad4f-d0772bdf08bb.gif">
 
