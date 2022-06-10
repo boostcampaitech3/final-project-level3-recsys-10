@@ -1,4 +1,3 @@
-# pull base image
 FROM python:3.8.5-slim-buster
 
 COPY start.sh /beerrecsys/start.sh
@@ -12,6 +11,5 @@ RUN pip install --upgrade pip \
 WORKDIR /beerrecsys
 
 
-EXPOSE 8001
+EXPOSE 30002
 CMD ["sh", "start.sh"]
-# CMD ["python", "-m", "backend.app"]
