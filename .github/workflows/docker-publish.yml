@@ -1,0 +1,60 @@
+name: Build and Deploy to Google Compute Engine
+
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+    - 'backend/**'
+    - 'frontend/**'
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  DOCKER_IMAGE_NAME: beerrecsys-deploy
+  GCE_INSTANCE: ${{ secrets.GCE_INSTANCE }}
+  GCE_INSTANCE_ZONE: ${{ secrets.GCE_INSTANCE_ZONE }}
+  DRIVE_URL: ${{ secrets.DRIVE_URL }}
+  DRIVE_FILENAME : ${{ secrets.DRIVE_FILENAME }}
+
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+          # gcloud CLI 설정
+      - uses: google-github-actions/setup-gcloud@v0
+        with:
+          version: '290.0.1'
+          service_account_key: ${{ secrets.SERVICE_ACCOUNT_KEY }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+      
+      - name: Make start.sh
+        run : echo "wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=$DRIVE_URL' -O $DRIVE_FILENAME" >> start.sh
+      - name: What
+        run : echo "unzip -o $DRIVE_FILENAME" >> start.sh
+      - name: Gogogo
+        run : echo "python -m backend.app" >> start.sh
+      
+          # gcloud에서 Docker 사용할 수 있도록 설정
+      - run: |-
+          gcloud --quiet auth configure-docker
+          
+            # Docker Image Build
+      - name: Build
+        run: |-
+          docker build . --tag "gcr.io/$PROJECT_ID/$DOCKER_IMAGE_NAME:$GITHUB_SHA"
+      # Docker Image Push
+      - name: Publish
+        run: |-
+          docker push "gcr.io/$PROJECT_ID/$DOCKER_IMAGE_NAME:$GITHUB_SHA"
+      # Deploy : update-container로 업데이트 요청
+      - name: Deploy
+        run: |-
+          gcloud compute instances update-container "$GCE_INSTANCE" \
+            --zone "$GCE_INSTANCE_ZONE" \
+            --container-image "gcr.io/$PROJECT_ID/$DOCKER_IMAGE_NAME:$GITHUB_SHA"
