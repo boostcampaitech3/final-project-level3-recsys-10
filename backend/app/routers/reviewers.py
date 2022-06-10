@@ -23,7 +23,7 @@ def get_db():
 @router.get("/beer/{beer_id}", response_class=HTMLResponse)
 async def beer(request: Request, beer_id: int, db: Session = Depends(get_db)):
     beer = crud.get_beer(db, beer_id=beer_id)
-    beerInfo = [beer.beer_name, beer.abv, beer.image_url]
+    beerInfo = [beer.beer_name, round(beer.abv,1), beer.style, f"https://raw.githubusercontent.com/minchoul2/beer_image/main/beer_image/{beer_id}.png"]
     '''
     description : reviews 객체에 있는 user_id를 통해 reviewer 테이블의 profile_name 받아오기(by. join)
     input : reviews 객체
@@ -34,8 +34,12 @@ async def beer(request: Request, beer_id: int, db: Session = Depends(get_db)):
        [profile_name, reviewscore, appearance, aroma, palate, taste, reviewtext] 순
     '''
     reviews = crud.get_beer_review(db, beer_id)
-
-    return main.templates.TemplateResponse("beer.html", {"request": request, "beerInfo": beerInfo, "reviews": reviews})
+    avg_review_score, avg_appearence, avg_aroma, avg_palate, avg_tasta, cnt_reviews = crud.get_beer_scores(db, beer_id=beer_id)
+    return main.templates.TemplateResponse("beer.html", 
+                                            {"request": request, "beerInfo": beerInfo, "reviews": reviews,
+                                             "avg_review_score":round(avg_review_score*2,2), "avg_appearence":round(avg_appearence*2,2),
+                                             "avg_aroma":round(avg_aroma,2), "avg_palate":round(avg_palate*2,2),"avg_tasta":round(avg_tasta,2),
+                                             "cnt_reviews":cnt_reviews})
 
 @router.post("/beer/{beer_id}", response_class=HTMLResponse)
 async def beerEvaluation(beer_id: int, appearance: int = Form(...), aroma: int = Form(...),

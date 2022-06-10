@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>맥주 상세 페이지</title>
+    <link href="{{ url_for('static', path='css/header.css') }}" rel="stylesheet"> 
     <link href="{{ url_for('static', path='css/beer.css?ver=2') }}" rel="stylesheet">
     <link href="{{ url_for('static', path='css/footer.css') }}" rel="stylesheet">
     <script src="{{ url_for('static', path='js/star.js?ver=1') }}"></script>
@@ -20,11 +21,45 @@
     {% include 'header.html' %}
     <div class="container">
         <div class="beer-info">
-            <img class="photo" src={{ beerInfo[2] }}>
+            <img class="photo" src={{ beerInfo[3] }}>
             <div class="beer-details">
                 <p class="name">{{ beerInfo[0] }}</p>
-                <span class="abv">도수: {{ beerInfo[1] }}</span><br>
-                <!-- <span class="overall">평점: </span> -->
+
+                <table class="info-table">
+                    <tr>
+                        <td class="info">도수</td>
+                        <td>{{ beerInfo[1] }} % </td>
+                    </tr>
+                    <tr>
+                        <td class="info">스타일</td>
+                        <td>{{ beerInfo[2] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="info">평점</td>
+                        <td>{{ avg_review_score }} / 10</td>
+                    </tr>
+                    <tr>
+                        <td class="info">리뷰수</td>
+                        <td>{{ cnt_reviews }} 개 </td>
+                    </tr>
+
+                    <tr>
+                        <td class="info">디자인</td>
+                        <td>{{ avg_appearence }} / 10</td>
+                    </tr>
+                    <tr>
+                        <td class="info">향</td>
+                        <td>{{ avg_aroma }} / 10</td>
+                    </tr>
+                    <tr>
+                        <td class="info">청량감</td>
+                        <td>{{ avg_palate }} / 10</td>
+                    </tr>
+                    <tr>
+                        <td class="info">맛</td>
+                        <td>{{ avg_tasta }} / 10</td>
+                    </tr>
+                </table>
             </div>
         </div>
         <hr class="contour">
@@ -52,7 +87,6 @@
                             <input type="range" name="palate" oninput="palateStar(this)" value="0" step="1" min="0"
                                 max="10">
                         </span></p>
-
                     </span>
                     <p class="taste">맛: <span id="taste-star">
                             ★★★★★
@@ -77,8 +111,7 @@
                 <p class="appearance">디자인: <span class="appearance-star">
                         ★★★★★
                         <span>★★★★★</span>
-                        <input type="range" disabled value={{ review.appearance }} step="1" min="0"
-                            max="10">
+                        <input type="range" disabled value={{ review.appearance }} step="1" min="0" max="10">
                     </span></p>
                 <p class="aroma">향: <span class="aroma-star">
                         ★★★★★
