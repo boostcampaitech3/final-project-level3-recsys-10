@@ -9,21 +9,20 @@ num_hidden = 100
 num_items = 80
 
 class AutoRec(nn.Module):
-    def __init__(self, num_hidden, num_items, dropout=0.05):
+    def __init__(self, num_hidden, num_items, dropout=0.2):
         super(AutoRec, self).__init__()
         self.encoder = nn.Linear(num_items, num_hidden)
-        self.sigmoid = nn.Sigmoid()
+        self.activate = nn.Sigmoid()
         self.decoder = nn.Linear(num_hidden, num_items)
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, mat):
-        hidden = self.dropout(self.sigmoid(self.encoder(mat)))
-        pred = self.decoder(hidden)
+        hidden = self.dropout(self.activate(self.encoder(mat)))
+        pred = self.activate(self.decoder(hidden))
         
         return pred
 
-
-def get_model(model_path: str = "backend/recommendAPI/autorec_crawling.pt")-> AutoRec:
+def get_model(model_path: str = "backend/recommendAPI/autorec_implicit_korean_test.pt")-> AutoRec:
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = AutoRec(num_hidden, num_items).to(device)
@@ -32,19 +31,19 @@ def get_model(model_path: str = "backend/recommendAPI/autorec_crawling.pt")-> Au
     return model
 
 def _transform(data : dict):
-    beer_mapping = pd.read_csv('data/ratebeer_label_encoding.csv')
+    beer_mapping = pd.read_csv('data/ratebeer_item_label_encoding.csv')
     x_test = [0 for _ in range(beer_mapping.shape[0])]
     for key, value in data.items():
-        encoding_key = int(beer_mapping[beer_mapping['beerID']==int(key)]['item_id_idx'].values)
+        encoding_key = int(beer_mapping[beer_mapping['item']==int(key)]['item_id_idx'].values)
         x_test[encoding_key] = float(value)
 
     return x_test
 
 def re_transform(topk_pred_list_idx : list):
-    beer_mapping = pd.read_csv('data/ratebeer_label_encoding.csv')
+    beer_mapping = pd.read_csv('data/ratebeer_item_label_encoding.csv')
     topk_pred_list_item = []
     for idx in topk_pred_list_idx:
-        item = beer_mapping[beer_mapping['item_id_idx']==idx]['beerID'].values
+        item = beer_mapping[beer_mapping['item_id_idx']==idx]['item'].values
         topk_pred_list_item.extend(item)
 
     return topk_pred_list_item
