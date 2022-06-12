@@ -16,8 +16,9 @@
     {% include 'header.html' %}
     <div class="intro">
         <div class="intro-context">
-            <span id="intro-msg1">당신이 마셨던 맥주에 대해서 알려주세요.</span><br>
-            <span id="intro-msg2">저희에게 많이 알려줄수록 당신에게 맞는 추천을 해드릴 수 있어요!</span>
+            <span>당신이 마셨던 맥주에 대해서 알려주세요.</span><br>
+            <span>저희에게 많이 알려줄수록 당신에게 맞는 추천을 해드릴 수 있어요!</span><br>
+            <span>마시지 않은 맥주는 체크하지 않으셔도 됩니다.</span>
         </div>
     </div>
     <div class="container">
@@ -33,13 +34,13 @@
                         <div class="like-check">
                             <div class="boxed-check-group boxed-check-success">
                                 <label class="boxed-check">
-                                    <input class="boxed-check-input" type="radio" name={{ beer[0] }} value="1">
+                                    <input class="boxed-check-input" type="radio" name={{ beer[0] }} value="5">
                                     <div class="boxed-check-label">&#128077;</div>
                                 </label>
                             </div>
                             <div class="boxed-check-group boxed-check-danger">
                                 <label class="boxed-check">
-                                    <input class="boxed-check-input" type="radio" name={{ beer[0] }} value="2">
+                                    <input class="boxed-check-input" type="radio" name={{ beer[0] }} value="1">
                                     <div class="boxed-check-label">&#128078;</div>
                                 </label>
                             </div>
