@@ -200,9 +200,10 @@ class S3RecModel(nn.Module):
         
         # Explicit 으로 변경해주기 위해서는, attetion 할 때, 아이템에, 
         attention_mask = (input_ids > 0).long()
-        weighted_mask = input_ratings
+        weighted_mask = input_ratings/5 # Fixed - scaled
         extended_attention_mask = attention_mask.unsqueeze(1).unsqueeze(2)  # torch.int64
         extended_weighted_mask = weighted_mask.unsqueeze(1).unsqueeze(2)
+        # extended_weighted_mask = torch.nn.functional.softmax((extended_weighted_mask == 0)*-10000.0 + extended_weighted_mask, dim=3)
 
         max_len = attention_mask.size(-1)
         attn_shape = (1, max_len, max_len)
