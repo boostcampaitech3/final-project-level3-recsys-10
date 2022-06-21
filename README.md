@@ -6,6 +6,11 @@
 ## 📅 프로젝트 수행 기간 
 - 2022.05.16 ~ 2022.06.10
 
+## ✨ 프로젝트 산출물
+- [WRAP-UP REPORT](https://poised-speedwell-186.notion.site/Final-WRAP-UP-REPORT-f32fcafa56ce4ce78132058aed8a56aa)
+- [발표 자료](https://drive.google.com/file/d/1dRIKJF2TVSu2sV3okv2YIAPSMI-I8Ayu/view?usp=sharing)
+- [발표 영상](https://youtu.be/sYt8_AwI2E4)
+
 ## 👋 팀원 소개
 
 |                                                  [신민철](https://github.com/minchoul2)                                                   |                                                                          [유승태](https://github.com/yst3147)                                                                           |                                                 [이동석](https://github.com/dongseoklee1541)                                                  |                                                                        [이아현](https://github.com/ahyeon0508)                                                                         |                                                                         [임경태](https://github.com/gangtaro)                                                                         |
@@ -115,9 +120,6 @@ python -m backend.app
 
 - Github Pull Request 를 활용한 브랜치 관리
 <img width="500" height="300" alt="Git Pull Request" src="https://user-images.githubusercontent.com/41297473/172410317-d2697b7e-4889-4672-a064-b653095d17aa.gif">
-
-## ✨ WRAP-UP REPORT
-- [WRAP-UP REPORT](https://poised-speedwell-186.notion.site/Final-WRAP-UP-REPORT-f32fcafa56ce4ce78132058aed8a56aa)
 
 ## 📜 Reference
 - [Liang, Dawen, et al. "Variational autoencoders for collaborative filtering." Proceedings of the 2018 world wide web conference. 2018.](https://dl.acm.org/doi/pdf/10.1145/3178876.3186150)
