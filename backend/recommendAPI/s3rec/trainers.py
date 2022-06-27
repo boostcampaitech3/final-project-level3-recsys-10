@@ -278,8 +278,8 @@ class FinetuneTrainer(Trainer):
         else:
             self.model.eval()
 
-            pred_list = None
-            answer_list = None
+            pred_list = []
+            answer_list = []
             for i, batch in rec_data_iter:
 
                 batch = tuple(t.to(self.device) for t in batch)
@@ -297,14 +297,13 @@ class FinetuneTrainer(Trainer):
                 answers_emb = self.model.item_embeddings(answers).squeeze(1) # [batch * hidden_size]
                 rating_pred = torch.sum(answers_emb * recommend_output, dim = 1)
 
-                metric_fn = torch.nn.MSELoss()
-                score = metric_fn(rating_pred, ratings_answer.squeeze(1))
+                pred_list.extend(rating_pred.cpu().data.numpy().copy().tolist())
+                answer_list.extend(ratings_answer.squeeze(1).cpu().data.numpy().copy().tolist())
 
-                # print(">>>>>>>>>rmse :", score)
+                # metric_fn = torch.nn.MSELoss()
+                # score = metric_fn(rating_pred, ratings_answer.squeeze(1))
 
                 # rating_pred = self.predict_full(recommend_output)
-
-
 
                 # rating_pred = rating_pred.cpu().data.numpy().copy()
                 # batch_user_index = user_ids.cpu().numpy()
@@ -329,6 +328,14 @@ class FinetuneTrainer(Trainer):
                 #         answer_list, answers.cpu().data.numpy(), axis=0
                 #     )
 
+            def rmse(y_pred_arr, y_true_arr):
+                return np.sqrt(((y_pred_arr - y_true_arr) ** 2).mean())
+
+            pred_arr = np.array(pred_list)
+            answer_arr = np.array(answer_list)
+
+            score = rmse(pred_arr, answer_arr)
+            
             if mode == "submission":
                 return pred_list
             else:

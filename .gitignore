@@ -14,6 +14,8 @@ config.yaml
 .ipynb_checkpoints
 .empty
 *.pt
+*.pth
+*.npy
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,linux,macos,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,linux,macos,windows
